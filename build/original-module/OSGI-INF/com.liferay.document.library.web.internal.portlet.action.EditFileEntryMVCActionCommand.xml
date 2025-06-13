@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.portlet.action.EditFileEntryMVCActionCommand" activate="activate" modified="activate" configuration-pid="com.liferay.document.library.configuration.DLConfiguration">
+  <property name="mvc.command.name" type="String">/document_library/edit_file_entry
+/document_library/upload_multiple_file_entries</property>
+  <property name="javax.portlet.name" type="String">com_liferay_document_library_web_portlet_DLPortlet
+com_liferay_document_library_web_portlet_DLAdminPortlet
+com_liferay_document_library_web_portlet_IGDisplayPortlet</property>
+  <service>
+    <provide interface="com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand"/>
+  </service>
+  <reference name="_assetDisplayPageEntryFormProcessor" interface="com.liferay.asset.display.page.portlet.AssetDisplayPageEntryFormProcessor" field="_assetDisplayPageEntryFormProcessor"/>
+  <reference name="_dlAppService" interface="com.liferay.document.library.kernel.service.DLAppService" field="_dlAppService"/>
+  <reference name="_dlTrashService" interface="com.liferay.document.library.kernel.service.DLTrashService" field="_dlTrashService"/>
+  <reference name="_dlValidator" interface="com.liferay.document.library.kernel.util.DLValidator" field="_dlValidator"/>
+  <reference name="_http" interface="com.liferay.portal.kernel.util.Http" field="_http"/>
+  <reference name="_multipleUploadResponseHandler" interface="com.liferay.upload.UploadResponseHandler" target="(upload.response.handler=multiple)" field="_multipleUploadResponseHandler"/>
+  <reference name="_portal" interface="com.liferay.portal.kernel.util.Portal" field="_portal"/>
+  <reference name="_trashEntryService" interface="com.liferay.trash.service.TrashEntryService" field="_trashEntryService"/>
+  <implementation class="com.liferay.document.library.web.internal.portlet.action.EditFileEntryMVCActionCommand"/>
+</scr:component>

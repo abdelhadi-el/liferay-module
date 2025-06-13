@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.struts.FindFolderStrutsAction" immediate="true">
+  <property name="path" type="String">/document_library/find_folder
+/image_gallery_display/find_folder</property>
+  <service>
+    <provide interface="com.liferay.portal.kernel.struts.StrutsAction"/>
+  </service>
+  <reference name="_dlAppLocalService" interface="com.liferay.document.library.kernel.service.DLAppLocalService" field="_dlAppLocalService"/>
+  <reference name="_portletPageFinder" interface="com.liferay.portal.kernel.portlet.PortletLayoutFinder" target="(model.class.name=com.liferay.portal.kernel.repository.model.Folder)" field="_portletPageFinder"/>
+  <implementation class="com.liferay.document.library.web.internal.struts.FindFolderStrutsAction"/>
+</scr:component>

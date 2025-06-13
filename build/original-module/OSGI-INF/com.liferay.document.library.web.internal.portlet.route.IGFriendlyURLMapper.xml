@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.portlet.route.IGFriendlyURLMapper">
+  <property name="com.liferay.portlet.friendly-url-routes" type="String" value="META-INF/friendly-url-routes/image-gallery-display-routes.xml"/>
+  <property name="javax.portlet.name" type="String" value="com_liferay_document_library_web_portlet_IGDisplayPortlet"/>
+  <service>
+    <provide interface="com.liferay.portal.kernel.portlet.FriendlyURLMapper"/>
+  </service>
+  <implementation class="com.liferay.document.library.web.internal.portlet.route.IGFriendlyURLMapper"/>
+</scr:component>

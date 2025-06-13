@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.portlet.action.UploadFileEntryMVCActionCommand">
+  <property name="mvc.command.name" type="String" value="/document_library/upload_file_entry"/>
+  <property name="javax.portlet.name" type="String">com_liferay_document_library_web_portlet_DLPortlet
+com_liferay_document_library_web_portlet_DLAdminPortlet
+com_liferay_document_library_web_portlet_IGDisplayPortlet</property>
+  <service>
+    <provide interface="com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand"/>
+  </service>
+  <reference name="_dlUploadFileEntryHandler" interface="com.liferay.document.library.web.internal.upload.DLUploadFileEntryHandler" field="_dlUploadFileEntryHandler"/>
+  <reference name="_dlUploadResponseHandler" interface="com.liferay.document.library.web.internal.upload.DLUploadResponseHandler" field="_dlUploadResponseHandler"/>
+  <reference name="_uploadHandler" interface="com.liferay.upload.UploadHandler" field="_uploadHandler"/>
+  <implementation class="com.liferay.document.library.web.internal.portlet.action.UploadFileEntryMVCActionCommand"/>
+</scr:component>

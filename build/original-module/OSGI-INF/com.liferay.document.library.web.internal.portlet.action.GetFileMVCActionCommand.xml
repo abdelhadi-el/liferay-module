@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.portlet.action.GetFileMVCActionCommand" immediate="true">
+  <property name="mvc.command.name" type="String" value="/document_library/get_file"/>
+  <property name="javax.portlet.name" type="String">com_liferay_document_library_web_portlet_DLPortlet
+com_liferay_document_library_web_portlet_DLAdminPortlet
+com_liferay_document_library_web_portlet_IGDisplayPortlet</property>
+  <service>
+    <provide interface="com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand"/>
+  </service>
+  <reference name="_portal" interface="com.liferay.portal.kernel.util.Portal" field="_portal"/>
+  <implementation class="com.liferay.document.library.web.internal.portlet.action.GetFileMVCActionCommand"/>
+</scr:component>

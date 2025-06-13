@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.portlet.toolbar.contributor.IGPortletToolbarContributor" immediate="true">
+  <property name="mvc.render.command.name" type="String">-
+/image_gallery_display/view</property>
+  <property name="javax.portlet.name" type="String" value="com_liferay_document_library_web_portlet_IGDisplayPortlet"/>
+  <service>
+    <provide interface="com.liferay.portal.kernel.portlet.toolbar.contributor.PortletToolbarContributor"/>
+  </service>
+  <reference name="_dlPortletToolbarContributorHelper" interface="com.liferay.document.library.web.internal.portlet.toolbar.contributor.helper.DLPortletToolbarContributorHelper" field="_dlPortletToolbarContributorHelper"/>
+  <implementation class="com.liferay.document.library.web.internal.portlet.toolbar.contributor.IGPortletToolbarContributor"/>
+</scr:component>

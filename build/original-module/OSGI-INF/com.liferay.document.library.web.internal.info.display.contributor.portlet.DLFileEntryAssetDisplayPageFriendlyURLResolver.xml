@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.info.display.contributor.portlet.DLFileEntryAssetDisplayPageFriendlyURLResolver">
+  <service>
+    <provide interface="com.liferay.portal.kernel.portlet.FriendlyURLResolver"/>
+  </service>
+  <reference name="assetDisplayPageEntryLocalService" interface="com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalService" field="assetDisplayPageEntryLocalService"/>
+  <reference name="assetEntryLocalService" interface="com.liferay.asset.kernel.service.AssetEntryService" field="assetEntryLocalService"/>
+  <reference name="assetHelper" interface="com.liferay.asset.util.AssetHelper" field="assetHelper"/>
+  <reference name="http" interface="com.liferay.portal.kernel.util.Http" field="http"/>
+  <reference name="infoDisplayContributorTracker" interface="com.liferay.info.display.contributor.InfoDisplayContributorTracker" field="infoDisplayContributorTracker"/>
+  <reference name="infoEditURLProviderTracker" interface="com.liferay.info.display.url.provider.InfoEditURLProviderTracker" field="infoEditURLProviderTracker"/>
+  <reference name="layoutLocalService" interface="com.liferay.portal.kernel.service.LayoutLocalService" field="layoutLocalService"/>
+  <reference name="layoutPageTemplateEntryService" interface="com.liferay.layout.page.template.service.LayoutPageTemplateEntryService" field="layoutPageTemplateEntryService"/>
+  <reference name="portal" interface="com.liferay.portal.kernel.util.Portal" field="portal"/>
+  <implementation class="com.liferay.document.library.web.internal.info.display.contributor.portlet.DLFileEntryAssetDisplayPageFriendlyURLResolver"/>
+</scr:component>

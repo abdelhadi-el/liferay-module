@@ -1,0 +1,137 @@
+{
+  "packages": {
+    "/": {
+      "dest": {
+        "dir": "./build/node/packageRunBuild/resources",
+        "id": "/",
+        "name": "document-library-web",
+        "version": "4.0.86"
+      },
+      "modules": {
+        "document_library/js/InfoPanel.es.js": {
+          "flags": {
+            "esModule": true
+          }
+        },
+        "document_library/js/bulk/BulkStatus.es.js": {
+          "flags": {
+            "esModule": true
+          }
+        },
+        "document_library/js/bulk/BulkStatus.soy.js": {
+          "flags": {
+            "esModule": true
+          }
+        },
+        "document_library/js/categorization/EditCategories.es.js": {
+          "flags": {
+            "esModule": true
+          }
+        },
+        "document_library/js/categorization/EditCategories.soy.js": {
+          "flags": {
+            "esModule": true
+          }
+        },
+        "document_library/js/categorization/EditTags.es.js": {
+          "flags": {
+            "esModule": true
+          }
+        },
+        "document_library/js/categorization/EditTags.soy.js": {
+          "flags": {
+            "esModule": true
+          }
+        }
+      },
+      "src": {
+        "dir": ".",
+        "id": "/",
+        "name": "document-library-web",
+        "version": "4.0.86"
+      }
+    },
+    "clipboard@2.0.4": {
+      "dest": {
+        "dir": "./build/node/packageRunBuild/resources/node_modules/document-library-web$clipboard@2.0.4",
+        "id": "document-library-web$clipboard@2.0.4",
+        "name": "document-library-web$clipboard",
+        "version": "2.0.4"
+      },
+      "modules": {
+        "dist/clipboard.js": {
+          "flags": {
+            "esModule": true
+          }
+        },
+        "dist/clipboard.min.js": {
+          "flags": {
+            "esModule": true
+          }
+        }
+      },
+      "src": {
+        "dir": "./../../../node_modules/clipboard",
+        "id": "clipboard@2.0.4",
+        "name": "clipboard",
+        "version": "2.0.4"
+      }
+    },
+    "delegate@3.2.0": {
+      "dest": {
+        "dir": "./build/node/packageRunBuild/resources/node_modules/document-library-web$delegate@3.2.0",
+        "id": "document-library-web$delegate@3.2.0",
+        "name": "document-library-web$delegate",
+        "version": "3.2.0"
+      },
+      "src": {
+        "dir": "./../../../node_modules/delegate",
+        "id": "delegate@3.2.0",
+        "name": "delegate",
+        "version": "3.2.0"
+      }
+    },
+    "good-listener@1.2.2": {
+      "dest": {
+        "dir": "./build/node/packageRunBuild/resources/node_modules/document-library-web$good-listener@1.2.2",
+        "id": "document-library-web$good-listener@1.2.2",
+        "name": "document-library-web$good-listener",
+        "version": "1.2.2"
+      },
+      "src": {
+        "dir": "./../../../node_modules/good-listener",
+        "id": "good-listener@1.2.2",
+        "name": "good-listener",
+        "version": "1.2.2"
+      }
+    },
+    "select@1.1.2": {
+      "dest": {
+        "dir": "./build/node/packageRunBuild/resources/node_modules/document-library-web$select@1.1.2",
+        "id": "document-library-web$select@1.1.2",
+        "name": "document-library-web$select",
+        "version": "1.1.2"
+      },
+      "src": {
+        "dir": "./../../../node_modules/select",
+        "id": "select@1.1.2",
+        "name": "select",
+        "version": "1.1.2"
+      }
+    },
+    "tiny-emitter@2.1.0": {
+      "dest": {
+        "dir": "./build/node/packageRunBuild/resources/node_modules/document-library-web$tiny-emitter@2.1.0",
+        "id": "document-library-web$tiny-emitter@2.1.0",
+        "name": "document-library-web$tiny-emitter",
+        "version": "2.1.0"
+      },
+      "src": {
+        "dir": "./../../../node_modules/tiny-emitter",
+        "id": "tiny-emitter@2.1.0",
+        "name": "tiny-emitter",
+        "version": "2.1.0"
+      }
+    }
+  }
+}

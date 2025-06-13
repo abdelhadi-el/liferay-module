@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.portlet.action.SearchMVCRenderCommand">
+  <property name="mvc.command.name" type="String" value="/document_library/search"/>
+  <property name="javax.portlet.name" type="String">com_liferay_document_library_web_portlet_DLPortlet
+com_liferay_document_library_web_portlet_DLAdminPortlet</property>
+  <service>
+    <provide interface="com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand"/>
+  </service>
+  <reference name="_dlPortletToolbarContributorRegistry" interface="com.liferay.document.library.web.internal.portlet.toolbar.contributor.DLPortletToolbarContributorRegistry" field="_dlPortletToolbarContributorRegistry"/>
+  <reference name="_dlTrashUtil" interface="com.liferay.document.library.web.internal.util.DLTrashUtil" field="_dlTrashUtil"/>
+  <implementation class="com.liferay.document.library.web.internal.portlet.action.SearchMVCRenderCommand"/>
+</scr:component>

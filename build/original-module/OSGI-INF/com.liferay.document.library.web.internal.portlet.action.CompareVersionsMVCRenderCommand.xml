@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.portlet.action.CompareVersionsMVCRenderCommand">
+  <property name="mvc.command.name" type="String" value="/document_library/compare_versions"/>
+  <property name="javax.portlet.name" type="String">com_liferay_document_library_web_portlet_DLPortlet
+com_liferay_document_library_web_portlet_DLAdminPortlet
+com_liferay_document_library_web_portlet_IGDisplayPortlet</property>
+  <service>
+    <provide interface="com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand"/>
+  </service>
+  <reference name="_dlAppLocalService" interface="com.liferay.document.library.kernel.service.DLAppLocalService" field="_dlAppLocalService"/>
+  <reference name="_dlAppService" interface="com.liferay.document.library.kernel.service.DLAppService" field="_dlAppService"/>
+  <implementation class="com.liferay.document.library.web.internal.portlet.action.CompareVersionsMVCRenderCommand"/>
+</scr:component>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.security.permission.resource.DLFolderPermission" immediate="true">
+  <reference name="DLFolderModelResourcePermission" interface="com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission" target="(model.class.name=com.liferay.document.library.kernel.model.DLFolder)" bind="setDLFolderModelResourcePermission"/>
+  <reference name="FolderModelResourcePermission" interface="com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission" target="(model.class.name=com.liferay.portal.kernel.repository.model.Folder)" bind="setFolderModelResourcePermission"/>
+  <implementation class="com.liferay.document.library.web.internal.security.permission.resource.DLFolderPermission"/>
+</scr:component>

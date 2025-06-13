@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.messaging.TempFileEntriesMessageListener" immediate="true" activate="activate" deactivate="deactivate" modified="activate" configuration-pid="com.liferay.document.library.configuration.DLConfiguration">
+  <service>
+    <provide interface="com.liferay.document.library.web.internal.messaging.TempFileEntriesMessageListener"/>
+  </service>
+  <reference name="ModuleServiceLifecycle" interface="com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle" target="(module.service.lifecycle=portal.initialized)" bind="setModuleServiceLifecycle"/>
+  <reference name="RepositoryLocalService" interface="com.liferay.portal.kernel.service.RepositoryLocalService" bind="setRepositoryLocalService"/>
+  <reference name="RepositoryProvider" interface="com.liferay.portal.kernel.repository.RepositoryProvider" bind="setRepositoryProvider"/>
+  <reference name="SchedulerEngineHelper" interface="com.liferay.portal.kernel.scheduler.SchedulerEngineHelper" bind="setSchedulerEngineHelper"/>
+  <reference name="_triggerFactory" interface="com.liferay.portal.kernel.scheduler.TriggerFactory" field="_triggerFactory"/>
+  <implementation class="com.liferay.document.library.web.internal.messaging.TempFileEntriesMessageListener"/>
+</scr:component>

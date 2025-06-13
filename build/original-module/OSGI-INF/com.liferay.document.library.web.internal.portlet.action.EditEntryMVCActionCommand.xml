@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.portlet.action.EditEntryMVCActionCommand">
+  <property name="mvc.command.name" type="String">/document_library/edit_entry
+/document_library/move_entry</property>
+  <property name="javax.portlet.name" type="String">com_liferay_document_library_web_portlet_DLPortlet
+com_liferay_document_library_web_portlet_DLAdminPortlet
+com_liferay_document_library_web_portlet_IGDisplayPortlet</property>
+  <service>
+    <provide interface="com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand"/>
+  </service>
+  <reference name="_dlAppService" interface="com.liferay.document.library.kernel.service.DLAppService" field="_dlAppService"/>
+  <reference name="_dlTrashService" interface="com.liferay.document.library.kernel.service.DLTrashService" field="_dlTrashService"/>
+  <reference name="_fileEntryBulkSelectionFactory" interface="com.liferay.bulk.selection.BulkSelectionFactory" target="(model.class.name=com.liferay.document.library.kernel.model.DLFileEntry)" field="_fileEntryBulkSelectionFactory"/>
+  <reference name="_fileShortcutBulkSelectionFactory" interface="com.liferay.bulk.selection.BulkSelectionFactory" target="(model.class.name=com.liferay.document.library.kernel.model.DLFileShortcut)" field="_fileShortcutBulkSelectionFactory"/>
+  <reference name="_folderBulkSelectionFactory" interface="com.liferay.bulk.selection.BulkSelectionFactory" target="(model.class.name=com.liferay.document.library.kernel.model.DLFolder)" field="_folderBulkSelectionFactory"/>
+  <reference name="_portal" interface="com.liferay.portal.kernel.util.Portal" field="_portal"/>
+  <reference name="_trashEntryService" interface="com.liferay.trash.service.TrashEntryService" field="_trashEntryService"/>
+  <implementation class="com.liferay.document.library.web.internal.portlet.action.EditEntryMVCActionCommand"/>
+</scr:component>

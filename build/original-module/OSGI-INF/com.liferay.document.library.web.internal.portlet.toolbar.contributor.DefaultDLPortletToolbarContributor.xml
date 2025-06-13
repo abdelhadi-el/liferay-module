@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.portlet.toolbar.contributor.DefaultDLPortletToolbarContributor" immediate="true" activate="activate" deactivate="deactivate">
+  <property name="mvc.render.command.name" type="String">-
+/document_library/view
+/document_library/view_folder</property>
+  <property name="javax.portlet.name" type="String" value="com_liferay_document_library_web_portlet_DLPortlet"/>
+  <service>
+    <provide interface="com.liferay.document.library.portlet.toolbar.contributor.DLPortletToolbarContributor"/>
+    <provide interface="com.liferay.portal.kernel.portlet.toolbar.contributor.PortletToolbarContributor"/>
+  </service>
+  <reference name="_dlPortletToolbarContributorHelper" interface="com.liferay.document.library.web.internal.portlet.toolbar.contributor.helper.DLPortletToolbarContributorHelper" field="_dlPortletToolbarContributorHelper"/>
+  <implementation class="com.liferay.document.library.web.internal.portlet.toolbar.contributor.DefaultDLPortletToolbarContributor"/>
+</scr:component>

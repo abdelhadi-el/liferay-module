@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.portlet.DLEditPortletProvider" immediate="true">
+  <property name="service.ranking" type="Integer" value="100"/>
+  <property name="model.class.name" type="String">com.liferay.document.library.kernel.model.DLFileEntryType
+com.liferay.portal.kernel.repository.model.FileEntry
+com.liferay.portal.kernel.repository.model.FileShortcut
+com.liferay.portal.kernel.repository.model.Folder</property>
+  <service>
+    <provide interface="com.liferay.portal.kernel.portlet.EditPortletProvider"/>
+    <provide interface="com.liferay.portal.kernel.portlet.ViewPortletProvider"/>
+  </service>
+  <implementation class="com.liferay.document.library.web.internal.portlet.DLEditPortletProvider"/>
+</scr:component>

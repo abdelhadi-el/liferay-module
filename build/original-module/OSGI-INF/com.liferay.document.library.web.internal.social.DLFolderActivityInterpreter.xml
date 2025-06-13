@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.social.DLFolderActivityInterpreter">
+  <property name="javax.portlet.name" type="String" value="com_liferay_document_library_web_portlet_DLPortlet"/>
+  <property name="model.class.name" type="String" value="com.liferay.document.library.kernel.model.DLFolder"/>
+  <service>
+    <provide interface="com.liferay.social.kernel.model.SocialActivityInterpreter"/>
+  </service>
+  <reference name="_folderModelResourcePermission" interface="com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission" target="(model.class.name=com.liferay.portal.kernel.repository.model.Folder)" field="_folderModelResourcePermission"/>
+  <reference name="_resourceBundleLoader" policy="dynamic" interface="com.liferay.portal.kernel.util.ResourceBundleLoader" target="(bundle.symbolic.name=com.liferay.document.library.web)" policy-option="greedy" field="_resourceBundleLoader"/>
+  <implementation class="com.liferay.document.library.web.internal.social.DLFolderActivityInterpreter"/>
+</scr:component>

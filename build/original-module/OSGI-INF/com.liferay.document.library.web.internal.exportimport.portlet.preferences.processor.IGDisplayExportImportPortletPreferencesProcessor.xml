@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.exportimport.portlet.preferences.processor.IGDisplayExportImportPortletPreferencesProcessor" immediate="true">
+  <property name="javax.portlet.name" type="String" value="com_liferay_document_library_web_portlet_IGDisplayPortlet"/>
+  <service>
+    <provide interface="com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessor"/>
+  </service>
+  <reference name="_dlExportImportPortletPreferencesProcessor" interface="com.liferay.document.library.web.internal.exportimport.portlet.preferences.processor.DLExportImportPortletPreferencesProcessor" field="_dlExportImportPortletPreferencesProcessor"/>
+  <reference name="_igDisplayExportCapability" interface="com.liferay.exportimport.portlet.preferences.processor.Capability" target="(name=IGDisplayExportCapability)" field="_igDisplayExportCapability"/>
+  <reference name="_igDisplayImportCapability" interface="com.liferay.exportimport.portlet.preferences.processor.Capability" target="(name=IGDisplayImportCapability)" field="_igDisplayImportCapability"/>
+  <implementation class="com.liferay.document.library.web.internal.exportimport.portlet.preferences.processor.IGDisplayExportImportPortletPreferencesProcessor"/>
+</scr:component>

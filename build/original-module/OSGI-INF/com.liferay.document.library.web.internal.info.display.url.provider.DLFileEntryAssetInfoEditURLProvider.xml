@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.info.display.url.provider.DLFileEntryAssetInfoEditURLProvider">
+  <property name="model.class.name" type="String" value="com.liferay.document.library.kernel.model.DLFileEntry"/>
+  <service>
+    <provide interface="com.liferay.info.display.url.provider.InfoEditURLProvider"/>
+  </service>
+  <reference name="_groupLocalService" interface="com.liferay.portal.kernel.service.GroupLocalService" field="_groupLocalService"/>
+  <reference name="_portal" interface="com.liferay.portal.kernel.util.Portal" field="_portal"/>
+  <implementation class="com.liferay.document.library.web.internal.info.display.url.provider.DLFileEntryAssetInfoEditURLProvider"/>
+</scr:component>

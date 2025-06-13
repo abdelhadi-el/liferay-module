@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.security.permission.resource.DLFileEntryPermission" immediate="true">
+  <reference name="DLFileEntryModelResourcePermission" policy="dynamic" interface="com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission" target="(model.class.name=com.liferay.document.library.kernel.model.DLFileEntry)" bind="setDLFileEntryModelResourcePermission" unbind="unsetDLFileEntryModelResourcePermission" policy-option="greedy"/>
+  <reference name="FileEntryModelResourcePermission" interface="com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission" target="(model.class.name=com.liferay.portal.kernel.repository.model.FileEntry)" bind="setFileEntryModelResourcePermission"/>
+  <implementation class="com.liferay.document.library.web.internal.security.permission.resource.DLFileEntryPermission"/>
+</scr:component>

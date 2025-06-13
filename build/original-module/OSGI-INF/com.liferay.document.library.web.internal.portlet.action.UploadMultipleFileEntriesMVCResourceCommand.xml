@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.portlet.action.UploadMultipleFileEntriesMVCResourceCommand">
+  <property name="mvc.command.name" type="String" value="/document_library/upload_multiple_file_entries"/>
+  <property name="javax.portlet.name" type="String">com_liferay_document_library_web_portlet_DLPortlet
+com_liferay_document_library_web_portlet_DLAdminPortlet
+com_liferay_document_library_web_portlet_IGDisplayPortlet</property>
+  <service>
+    <provide interface="com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand"/>
+  </service>
+  <implementation class="com.liferay.document.library.web.internal.portlet.action.UploadMultipleFileEntriesMVCResourceCommand"/>
+</scr:component>

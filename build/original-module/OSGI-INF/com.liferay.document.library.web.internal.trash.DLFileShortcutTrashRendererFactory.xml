@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.trash.DLFileShortcutTrashRendererFactory" immediate="true">
+  <property name="model.class.name" type="String" value="com.liferay.document.library.kernel.model.DLFileShortcut"/>
+  <service>
+    <provide interface="com.liferay.portal.kernel.trash.TrashRendererFactory"/>
+  </service>
+  <reference name="DLFileShortcutLocalService" interface="com.liferay.document.library.kernel.service.DLFileShortcutLocalService" bind="setDLFileShortcutLocalService"/>
+  <reference name="_trashHelper" interface="com.liferay.trash.TrashHelper" field="_trashHelper"/>
+  <implementation class="com.liferay.document.library.web.internal.trash.DLFileShortcutTrashRendererFactory"/>
+</scr:component>

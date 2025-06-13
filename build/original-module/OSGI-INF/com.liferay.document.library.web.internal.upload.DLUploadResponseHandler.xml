@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.upload.DLUploadResponseHandler">
+  <service>
+    <provide interface="com.liferay.document.library.web.internal.upload.DLUploadResponseHandler"/>
+  </service>
+  <reference name="_dlURLHelper" interface="com.liferay.document.library.util.DLURLHelper" field="_dlURLHelper"/>
+  <reference name="_itemSelectorUploadResponseHandler" interface="com.liferay.item.selector.ItemSelectorUploadResponseHandler" field="_itemSelectorUploadResponseHandler"/>
+  <implementation class="com.liferay.document.library.web.internal.upload.DLUploadResponseHandler"/>
+</scr:component>

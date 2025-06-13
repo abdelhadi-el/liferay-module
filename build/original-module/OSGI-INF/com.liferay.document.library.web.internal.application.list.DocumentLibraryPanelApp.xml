@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.application.list.DocumentLibraryPanelApp" immediate="true">
+  <property name="panel.category.key" type="String" value="site_administration.content"/>
+  <property name="panel.app.order" type="Integer" value="400"/>
+  <service>
+    <provide interface="com.liferay.application.list.PanelApp"/>
+  </service>
+  <reference name="Portlet" interface="com.liferay.portal.kernel.model.Portlet" target="(javax.portlet.name=com_liferay_document_library_web_portlet_DLAdminPortlet)" bind="setPortlet"/>
+  <implementation class="com.liferay.document.library.web.internal.application.list.DocumentLibraryPanelApp"/>
+</scr:component>

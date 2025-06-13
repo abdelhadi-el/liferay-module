@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.portlet.configuration.icon.DeleteFolderPortletConfigurationIcon" immediate="true">
+  <property name="path" type="String" value="/document_library/view_folder"/>
+  <property name="javax.portlet.name" type="String" value="com_liferay_document_library_web_portlet_DLAdminPortlet"/>
+  <service>
+    <provide interface="com.liferay.portal.kernel.portlet.configuration.icon.PortletConfigurationIcon"/>
+  </service>
+  <reference name="_dlTrashUtil" interface="com.liferay.document.library.web.internal.util.DLTrashUtil" field="_dlTrashUtil"/>
+  <reference name="_folderModelResourcePermission" interface="com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission" target="(model.class.name=com.liferay.portal.kernel.repository.model.Folder)" field="_folderModelResourcePermission"/>
+  <reference name="_portal" interface="com.liferay.portal.kernel.util.Portal" field="_portal"/>
+  <implementation class="com.liferay.document.library.web.internal.portlet.configuration.icon.DeleteFolderPortletConfigurationIcon"/>
+</scr:component>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.display.context.DLDisplayContextProviderImpl" immediate="true" activate="activate" deactivate="deactivate">
+  <service>
+    <provide interface="com.liferay.document.library.display.context.DLDisplayContextProvider"/>
+  </service>
+  <reference name="StorageEngine" interface="com.liferay.dynamic.data.mapping.storage.StorageEngine" bind="setStorageEngine"/>
+  <reference name="_dlMimeTypeDisplayContext" cardinality="0..1" policy="dynamic" interface="com.liferay.document.library.display.context.DLMimeTypeDisplayContext" policy-option="greedy" field="_dlMimeTypeDisplayContext"/>
+  <reference name="_dlTrashUtil" interface="com.liferay.document.library.web.internal.util.DLTrashUtil" field="_dlTrashUtil"/>
+  <reference name="_dlURLHelper" interface="com.liferay.document.library.util.DLURLHelper" field="_dlURLHelper"/>
+  <reference name="_dlValidator" interface="com.liferay.document.library.kernel.util.DLValidator" field="_dlValidator"/>
+  <reference name="_resourceBundleLoader" policy="dynamic" interface="com.liferay.portal.kernel.util.ResourceBundleLoader" target="(bundle.symbolic.name=com.liferay.document.library.web)" policy-option="greedy" field="_resourceBundleLoader"/>
+  <reference name="_versioningStrategy" policy="dynamic" interface="com.liferay.document.library.kernel.versioning.VersioningStrategy" policy-option="greedy" field="_versioningStrategy"/>
+  <implementation class="com.liferay.document.library.web.internal.display.context.DLDisplayContextProviderImpl"/>
+</scr:component>

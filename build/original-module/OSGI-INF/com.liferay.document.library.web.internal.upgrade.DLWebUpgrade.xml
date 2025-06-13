@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.upgrade.DLWebUpgrade" immediate="true">
+  <service>
+    <provide interface="com.liferay.portal.upgrade.registry.UpgradeStepRegistrator"/>
+  </service>
+  <reference name="CompanyLocalService" interface="com.liferay.portal.kernel.service.CompanyLocalService" bind="setCompanyLocalService"/>
+  <reference name="GroupLocalService" interface="com.liferay.portal.kernel.service.GroupLocalService" bind="setGroupLocalService"/>
+  <reference name="SettingsFactory" interface="com.liferay.portal.kernel.settings.SettingsFactory" bind="setSettingsFactory"/>
+  <implementation class="com.liferay.document.library.web.internal.upgrade.DLWebUpgrade"/>
+</scr:component>

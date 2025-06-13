@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.exportimport.portlet.preferences.processor.IGDisplayPortletDisplayTemplateImportCapability" immediate="true">
+  <property name="name" type="String" value="IGDisplayImportCapability"/>
+  <property name="type" type="String" value="import"/>
+  <service>
+    <provide interface="com.liferay.portlet.display.template.exportimport.portlet.preferences.processor.PortletDisplayTemplateRegister"/>
+  </service>
+  <implementation class="com.liferay.document.library.web.internal.exportimport.portlet.preferences.processor.IGDisplayPortletDisplayTemplateImportCapability"/>
+</scr:component>

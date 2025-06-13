@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.exportimport.lifecycle.CascadeFileEntryTypesExportImportLifecycleListener">
+  <service>
+    <provide interface="com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleListener"/>
+  </service>
+  <reference name="DLFileEntryTypeLocalService" interface="com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService" bind="setDLFileEntryTypeLocalService"/>
+  <reference name="DlFolderLocalService" interface="com.liferay.document.library.kernel.service.DLFolderLocalService" bind="setDlFolderLocalService"/>
+  <implementation class="com.liferay.document.library.web.internal.exportimport.lifecycle.CascadeFileEntryTypesExportImportLifecycleListener"/>
+</scr:component>

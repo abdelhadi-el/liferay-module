@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.util.DLWebComponentProvider" immediate="true" activate="activate" deactivate="deactivate">
+  <reference name="DLDisplayContextProvider" interface="com.liferay.document.library.display.context.DLDisplayContextProvider" bind="setDLDisplayContextProvider"/>
+  <reference name="IGDisplayContextProvider" interface="com.liferay.document.library.web.internal.display.context.IGDisplayContextProvider" bind="setIGDisplayContextProvider"/>
+  <reference name="_dlAdminDisplayContextProvider" interface="com.liferay.document.library.web.internal.display.context.DLAdminDisplayContextProvider" field="_dlAdminDisplayContextProvider"/>
+  <implementation class="com.liferay.document.library.web.internal.util.DLWebComponentProvider"/>
+</scr:component>

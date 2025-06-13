@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.asset.model.DLFolderAssetRendererFactory" immediate="true">
+  <property name="javax.portlet.name" type="String" value="com_liferay_document_library_web_portlet_DLPortlet"/>
+  <service>
+    <provide interface="com.liferay.asset.kernel.model.AssetRendererFactory"/>
+  </service>
+  <reference name="DLAppLocalService" interface="com.liferay.document.library.kernel.service.DLAppLocalService" bind="setDLAppLocalService"/>
+  <reference name="_folderModelResourcePermission" interface="com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission" target="(model.class.name=com.liferay.portal.kernel.repository.model.Folder)" field="_folderModelResourcePermission"/>
+  <reference name="_trashHelper" interface="com.liferay.trash.TrashHelper" field="_trashHelper"/>
+  <implementation class="com.liferay.document.library.web.internal.asset.model.DLFolderAssetRendererFactory"/>
+</scr:component>

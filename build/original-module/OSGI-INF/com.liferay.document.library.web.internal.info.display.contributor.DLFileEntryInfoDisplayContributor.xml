@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.info.display.contributor.DLFileEntryInfoDisplayContributor">
+  <service>
+    <provide interface="com.liferay.info.display.contributor.InfoDisplayContributor"/>
+  </service>
+  <reference name="_assetEntryInfoDisplayFieldProvider" interface="com.liferay.asset.info.display.field.AssetEntryInfoDisplayFieldProvider" field="_assetEntryInfoDisplayFieldProvider"/>
+  <reference name="_classTypesInfoDisplayFieldProvider" interface="com.liferay.info.display.field.ClassTypesInfoDisplayFieldProvider" field="_classTypesInfoDisplayFieldProvider"/>
+  <reference name="_ddmFormValuesInfoDisplayFieldProvider" interface="com.liferay.dynamic.data.mapping.info.display.field.DDMFormValuesInfoDisplayFieldProvider" field="_ddmFormValuesInfoDisplayFieldProvider"/>
+  <reference name="_expandoInfoDisplayFieldProvider" interface="com.liferay.info.display.field.ExpandoInfoDisplayFieldProvider" field="_expandoInfoDisplayFieldProvider"/>
+  <reference name="_infoDisplayFieldProvider" interface="com.liferay.info.display.field.InfoDisplayFieldProvider" field="_infoDisplayFieldProvider"/>
+  <reference name="_repositoryProvider" interface="com.liferay.portal.kernel.repository.RepositoryProvider" field="_repositoryProvider"/>
+  <implementation class="com.liferay.document.library.web.internal.info.display.contributor.DLFileEntryInfoDisplayContributor"/>
+</scr:component>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.portlet.configuration.icon.PermissionsPortletConfigurationIcon" immediate="true">
+  <property name="javax.portlet.name" type="String" value="com_liferay_document_library_web_portlet_DLAdminPortlet"/>
+  <service>
+    <provide interface="com.liferay.portal.kernel.portlet.configuration.icon.PortletConfigurationIcon"/>
+  </service>
+  <reference name="_portletResourcePermission" interface="com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission" target="(resource.name=com.liferay.document.library)" field="_portletResourcePermission"/>
+  <implementation class="com.liferay.document.library.web.internal.portlet.configuration.icon.PermissionsPortletConfigurationIcon"/>
+</scr:component>

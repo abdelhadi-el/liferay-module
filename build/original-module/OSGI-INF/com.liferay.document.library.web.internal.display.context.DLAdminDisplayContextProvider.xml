@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.display.context.DLAdminDisplayContextProvider" immediate="true">
+  <service>
+    <provide interface="com.liferay.document.library.web.internal.display.context.DLAdminDisplayContextProvider"/>
+  </service>
+  <reference name="_versioningStrategy" policy="dynamic" interface="com.liferay.document.library.kernel.versioning.VersioningStrategy" policy-option="greedy" field="_versioningStrategy"/>
+  <implementation class="com.liferay.document.library.web.internal.display.context.DLAdminDisplayContextProvider"/>
+</scr:component>

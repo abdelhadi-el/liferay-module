@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.template.IGPortletDisplayTemplateHandler" immediate="true" activate="activate" modified="activate" configuration-pid="com.liferay.document.library.configuration.DLConfiguration">
+  <property name="javax.portlet.name" type="String" value="com_liferay_document_library_web_portlet_IGDisplayPortlet"/>
+  <service>
+    <provide interface="com.liferay.portal.kernel.template.TemplateHandler"/>
+  </service>
+  <reference name="_portal" interface="com.liferay.portal.kernel.util.Portal" field="_portal"/>
+  <implementation class="com.liferay.document.library.web.internal.template.IGPortletDisplayTemplateHandler"/>
+</scr:component>

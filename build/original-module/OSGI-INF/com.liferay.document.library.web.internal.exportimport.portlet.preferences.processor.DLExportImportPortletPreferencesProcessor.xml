@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.exportimport.portlet.preferences.processor.DLExportImportPortletPreferencesProcessor" immediate="true">
+  <property name="javax.portlet.name" type="String" value="com_liferay_document_library_web_portlet_DLPortlet"/>
+  <service>
+    <provide interface="com.liferay.document.library.web.internal.exportimport.portlet.preferences.processor.DLExportImportPortletPreferencesProcessor"/>
+    <provide interface="com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessor"/>
+  </service>
+  <reference name="DLAppLocalService" interface="com.liferay.document.library.kernel.service.DLAppLocalService" bind="setDLAppLocalService"/>
+  <reference name="_dlCommentsAndRatingsExporterImporterCapability" interface="com.liferay.document.library.web.internal.exportimport.portlet.preferences.processor.DLCommentsAndRatingsExporterImporterCapability" field="_dlCommentsAndRatingsExporterImporterCapability"/>
+  <reference name="_dlPortletDataHandler" interface="com.liferay.exportimport.kernel.lar.PortletDataHandler" target="(javax.portlet.name=com_liferay_document_library_web_portlet_DLPortlet)" field="_dlPortletDataHandler"/>
+  <reference name="_exportCapability" interface="com.liferay.exportimport.portlet.preferences.processor.Capability" target="(name=PortletDisplayTemplateExporter)" field="_exportCapability"/>
+  <reference name="_exportImportHelper" interface="com.liferay.exportimport.kernel.lar.ExportImportHelper" field="_exportImportHelper"/>
+  <reference name="_importCapability" interface="com.liferay.exportimport.portlet.preferences.processor.Capability" target="(name=PortletDisplayTemplateImporter)" field="_importCapability"/>
+  <implementation class="com.liferay.document.library.web.internal.exportimport.portlet.preferences.processor.DLExportImportPortletPreferencesProcessor"/>
+</scr:component>

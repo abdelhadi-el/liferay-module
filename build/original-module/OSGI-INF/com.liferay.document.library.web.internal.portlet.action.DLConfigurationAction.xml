@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.portlet.action.DLConfigurationAction" immediate="true">
+  <property name="javax.portlet.name" type="String" value="com_liferay_document_library_web_portlet_DLPortlet"/>
+  <service>
+    <provide interface="com.liferay.portal.kernel.portlet.ConfigurationAction"/>
+  </service>
+  <reference name="ServletContext" interface="javax.servlet.ServletContext" target="(osgi.web.symbolicname=com.liferay.document.library.web)" bind="setServletContext"/>
+  <implementation class="com.liferay.document.library.web.internal.portlet.action.DLConfigurationAction"/>
+</scr:component>

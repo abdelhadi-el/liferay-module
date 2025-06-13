@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.portlet.action.PublishFileShortcutMVCActionCommand" immediate="true">
+  <property name="mvc.command.name" type="String" value="/document_library/publish_file_shortcut"/>
+  <property name="javax.portlet.name" type="String" value="com_liferay_document_library_web_portlet_DLAdminPortlet"/>
+  <service>
+    <provide interface="com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand"/>
+  </service>
+  <reference name="_dlAppLocalService" interface="com.liferay.document.library.kernel.service.DLAppLocalService" field="_dlAppLocalService"/>
+  <reference name="_exportImportChangesetMVCActionCommand" interface="com.liferay.exportimport.changeset.portlet.action.ExportImportChangesetMVCActionCommand" field="_exportImportChangesetMVCActionCommand"/>
+  <implementation class="com.liferay.document.library.web.internal.portlet.action.PublishFileShortcutMVCActionCommand"/>
+</scr:component>

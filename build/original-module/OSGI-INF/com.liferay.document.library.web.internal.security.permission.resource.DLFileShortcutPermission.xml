@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.security.permission.resource.DLFileShortcutPermission" immediate="true">
+  <reference name="DLFileShortcutModelResourcePermission" interface="com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission" target="(model.class.name=com.liferay.document.library.kernel.model.DLFileShortcut)" bind="setDLFileShortcutModelResourcePermission"/>
+  <reference name="FileShortcutModelResourcePermission" interface="com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission" target="(model.class.name=com.liferay.portal.kernel.repository.model.FileShortcut)" bind="setFileShortcutModelResourcePermission"/>
+  <implementation class="com.liferay.document.library.web.internal.security.permission.resource.DLFileShortcutPermission"/>
+</scr:component>

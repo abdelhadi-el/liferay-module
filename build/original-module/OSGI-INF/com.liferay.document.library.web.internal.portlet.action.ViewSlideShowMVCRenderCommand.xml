@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.liferay.document.library.web.internal.portlet.action.ViewSlideShowMVCRenderCommand">
+  <property name="mvc.command.name" type="String" value="/image_gallery_display/view_slide_show"/>
+  <property name="javax.portlet.name" type="String" value="com_liferay_document_library_web_portlet_IGDisplayPortlet"/>
+  <service>
+    <provide interface="com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand"/>
+  </service>
+  <reference name="_dlTrashUtil" interface="com.liferay.document.library.web.internal.util.DLTrashUtil" field="_dlTrashUtil"/>
+  <implementation class="com.liferay.document.library.web.internal.portlet.action.ViewSlideShowMVCRenderCommand"/>
+</scr:component>
