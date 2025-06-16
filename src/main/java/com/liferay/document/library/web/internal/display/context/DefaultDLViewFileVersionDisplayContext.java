@@ -68,17 +68,19 @@ import javax.servlet.http.HttpServletResponse;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
-import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
-import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+// import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
+// import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.util.PortalUtil;
 // import com.liferay.document.library.kernel.service.permission.DLFileEntryPermission;
-import com.liferay.document.library.kernel.security.permission.resource.DLFileEntryPermission;
+// import com.liferay.document.library.kernel.security.permission.resource.DLFileEntryPermission;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.dynamic.data.mapping.storage.DDMStorageEngineManager;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.document.library.web.internal.settings.DLPortletInstanceSettings;
 import com.liferay.document.library.kernel.model.DLFolder;
-
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.document.library.kernel.model.DLFileEntry;
+// import com.liferay.dynamic.data.mapping.model.DDMStructure;
 /**
  * @author Adolfo P??rez
  */
@@ -86,8 +88,8 @@ public class DefaultDLViewFileVersionDisplayContext
 	implements DLViewFileVersionDisplayContext {
 
 	private ThemeDisplay _themeDisplay;
-	private final LiferayPortletRequest _liferayPortletRequest;
-	private final LiferayPortletResponse _liferayPortletResponse;
+	// private final LiferayPortletRequest _liferayPortletRequest;
+	// private final LiferayPortletResponse _liferayPortletResponse;
 	private final FileEntry _fileEntry;
 	private final DDMStorageEngineManager _ddmStorageEngineManager;
 
@@ -135,7 +137,7 @@ public class DefaultDLViewFileVersionDisplayContext
 		}
 	}
 
-	@Override
+	// @Override
 	public String getCssClassFileMimeType() {
 		if (_dlMimeTypeDisplayContext == null) {
 			return "file-icon-color-0";
@@ -177,7 +179,7 @@ public class DefaultDLViewFileVersionDisplayContext
 		}
 	}
 
-	// @Override
+	@Override
 	public DDMFormValues getDDMFormValues(long classPK) throws PortalException {
 		try {
 			return _ddmStorageEngineManager.getDDMFormValues(classPK);
@@ -206,8 +208,8 @@ public class DefaultDLViewFileVersionDisplayContext
 	// }
 
 	
-	@Override
-	public List<DDMStructure> getDDMStructures() throws PortalException {
+	// @Override
+	public DDMStructure getDDMStructures() {
 		if (_ddmStructures != null) {
 			return _ddmStructures;
 		}
@@ -216,7 +218,7 @@ public class DefaultDLViewFileVersionDisplayContext
 			DLFileVersion dlFileVersion = (DLFileVersion)_fileVersion.getModel();
 			_ddmStructures = dlFileVersion.getDDMStructures();
 		} else {
-			_ddmStructures = Collections.emptyList();
+			_ddmStructures = null;
 		}
 
 		return _ddmStructures;
@@ -248,7 +250,7 @@ public class DefaultDLViewFileVersionDisplayContext
 		return LanguageUtil.get(_resourceBundle, "comments");
 	}
 
-	@Override
+	// @Override
 	public String getIconFileMimeType() {
 		if (_dlMimeTypeDisplayContext == null) {
 			return "document-default";
@@ -355,19 +357,19 @@ public class DefaultDLViewFileVersionDisplayContext
 
 	@Override
 	public boolean isDownloadLinkVisible() throws PortalException {
-		return _hasDownloadPermission();
+		return _isDownloadActionAvailable();
 	}
 
-	private boolean _hasDownloadPermission() {
-		try {
-			return DLFileEntryPermission.contains(
-				_themeDisplay.getPermissionChecker(), 
-				_fileEntry, 
-				ActionKeys.VIEW);
-		} catch (Exception e) {
-			return false;
-		}
-	}
+	// private boolean _hasDownloadPermission() {
+	// 	try {
+	// 		return DLFileEntryPermission.contains(
+	// 			_themeDisplay.getPermissionChecker(), 
+	// 			_fileEntry, 
+	// 			ActionKeys.VIEW);
+	// 	} catch (Exception e) {
+	// 		return false;
+	// 	}
+	// }
 
 	private boolean _isDownloadActionAvailable() throws PortalException {
 		try {
