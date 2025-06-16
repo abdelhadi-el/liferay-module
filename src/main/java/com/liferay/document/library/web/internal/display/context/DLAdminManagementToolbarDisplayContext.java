@@ -87,8 +87,11 @@ import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.repository.capabilities.TrashCapability;
 import com.liferay.portal.kernel.dao.search.ResultRow;
-import javax.portlet.PortletPreferences;
 import com.liferay.portal.kernel.util.GetterUtil;
+import javax.portlet.PortletPreferences;
+import javax.portlet.PortletRequest;
+import com.liferay.portal.kernel.util.JavaConstants;
+
 /**
  * @author Alejandro Tard??n
  */
@@ -753,18 +756,42 @@ public class DLAdminManagementToolbarDisplayContext {
 	// 	// return _dlPortletInstanceSettingsHelper.isShowSearch();
 	// }
 
+	// public boolean isShowSearch() {
+	// 	// Accès direct à la configuration du portlet
+	// 	PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
+		
+	// 	// Récupération des préférences comme dans les autres méthodes
+	// 	PortletPreferences portletPreferences = portletDisplay.getPortletSetup();
+		
+	// 	// La clé exacte utilisée par l'ancien helper
+	// 	return GetterUtil.getBoolean(
+	// 		portletPreferences.getValue("showSearch", "true"), 
+	// 		true
+	// 	);
+	// }
+
+	// TODO check this
 	public boolean isShowSearch() {
-		// Accès direct à la configuration du portlet
-		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
-		
-		// Récupération des préférences comme dans les autres méthodes
-		PortletPreferences portletPreferences = portletDisplay.getPortletSetup();
-		
-		// La clé exacte utilisée par l'ancien helper
-		return GetterUtil.getBoolean(
-			portletPreferences.getValue("showSearch", "true"), 
-			true
-		);
+		try {
+			PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
+			
+			// Accès via PortletRequest comme dans les autres patterns
+			PortletRequest portletRequest = (PortletRequest)_httpServletRequest.getAttribute(
+				JavaConstants.JAVAX_PORTLET_REQUEST);
+			
+			if (portletRequest != null) {
+				PortletPreferences portletPreferences = portletRequest.getPreferences();
+				return GetterUtil.getBoolean(
+					portletPreferences.getValue("showSearch", "true"), 
+					true
+				);
+			}
+			
+			return true; // Valeur par défaut
+			
+		} catch (Exception e) {
+			return true;
+		}
 	}
 
 	private PortletURL _getCurrentSortingURL() {
