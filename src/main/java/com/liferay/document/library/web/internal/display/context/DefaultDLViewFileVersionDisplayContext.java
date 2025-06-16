@@ -631,12 +631,12 @@ public class DefaultDLViewFileVersionDisplayContext
 			if (fileShortcut == null) {
 				_uiItemsBuilder = new UIItemsBuilder(
 					httpServletRequest, fileEntry, fileVersion, _resourceBundle,
-					null, versioningStrategy, dlURLHelper);
+					versioningStrategy, dlURLHelper);
 			}
 			else {
 				_uiItemsBuilder = new UIItemsBuilder(
 					httpServletRequest, fileShortcut, _resourceBundle,
-					null, versioningStrategy, dlURLHelper);
+					versioningStrategy, dlURLHelper);
 			}
 			_log.info("Using UIItemsBuilder: " + _uiItemsBuilder.getClass().getName());
 

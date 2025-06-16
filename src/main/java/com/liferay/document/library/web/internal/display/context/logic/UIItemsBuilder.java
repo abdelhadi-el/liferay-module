@@ -23,7 +23,7 @@ import com.liferay.document.library.kernel.model.DLFileShortcutConstants;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.versioning.VersioningStrategy;
 import com.liferay.document.library.util.DLURLHelper;
-import com.liferay.document.library.web.internal.util.DLTrashUtil;
+// import com.liferay.document.library.web.internal.util.DLTrashUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerRegistryUtil;
 import com.liferay.petra.string.StringBundler;
@@ -84,6 +84,18 @@ import javax.portlet.PortletURL;
 import javax.portlet.WindowStateException;
 
 import javax.servlet.http.HttpServletRequest;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.trash.TrashHandler;
+import com.liferay.portal.kernel.trash.TrashHandlerRegistryUtil;
+import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.trash.service.TrashEntryLocalServiceUtil;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.dao.search.ResultRow;
+import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
 /**
  * @author Iv??n Zaera
@@ -93,34 +105,34 @@ public class UIItemsBuilder {
 	public UIItemsBuilder(
 		HttpServletRequest httpServletRequest, FileEntry fileEntry,
 		FileVersion fileVersion, ResourceBundle resourceBundle,
-		DLTrashUtil dlTrashUtil, VersioningStrategy versioningStrategy,
+		/* DLTrashUtil dlTrashUtil, */ VersioningStrategy versioningStrategy,
 		DLURLHelper dlURLHelper) {
 
 		this(
 			httpServletRequest, fileEntry, null, fileVersion, resourceBundle,
-			dlTrashUtil, versioningStrategy, dlURLHelper);
+			/* dlTrashUtil, */ versioningStrategy, dlURLHelper);
 	}
 
 	public UIItemsBuilder(
 			HttpServletRequest httpServletRequest, FileShortcut fileShortcut,
-			ResourceBundle resourceBundle, DLTrashUtil dlTrashUtil,
+			ResourceBundle resourceBundle, /*DLTrashUtil dlTrashUtil,*/
 			VersioningStrategy versioningStrategy, DLURLHelper dlURLHelper)
 		throws PortalException {
 
 		this(
 			httpServletRequest, null, fileShortcut,
-			fileShortcut.getFileVersion(), resourceBundle, dlTrashUtil,
+			fileShortcut.getFileVersion(), resourceBundle, /* dlTrashUtil, */
 			versioningStrategy, dlURLHelper);
 	}
 
 	public UIItemsBuilder(
 		HttpServletRequest httpServletRequest, FileVersion fileVersion,
-		ResourceBundle resourceBundle, DLTrashUtil dlTrashUtil,
+		ResourceBundle resourceBundle, /*DLTrashUtil dlTrashUtil,*/
 		VersioningStrategy versioningStrategy, DLURLHelper dlURLHelper) {
 
 		this(
 			httpServletRequest, null, null, fileVersion, resourceBundle,
-			dlTrashUtil, versioningStrategy, dlURLHelper);
+			/* dlTrashUtil, */ versioningStrategy, dlURLHelper);
 	}
 
 	public void addCancelCheckoutMenuItem(List<MenuItem> menuItems)
@@ -455,7 +467,8 @@ public class UIItemsBuilder {
 	public void addDownloadMenuItem(List<MenuItem> menuItems)
 		throws PortalException {
 
-		if (!_fileEntryDisplayContextHelper.isDownloadActionAvailable()) {
+		// if (!_fileEntryDisplayContextHelper.isDownloadActionAvailable()) {
+		if (!_isDownloadActionAvailable()) {
 			return;
 		}
 
@@ -495,7 +508,8 @@ public class UIItemsBuilder {
 	public void addDownloadToolbarItem(List<ToolbarItem> toolbarItems)
 		throws PortalException {
 
-		if (!_fileEntryDisplayContextHelper.isDownloadActionAvailable()) {
+		// if (!_fileEntryDisplayContextHelper.isDownloadActionAvailable()) {
+		if (!_isDownloadActionAvailable()) {
 			return;
 		}
 
@@ -516,8 +530,10 @@ public class UIItemsBuilder {
 
 		if (((_fileShortcut != null) &&
 			 !_fileShortcutDisplayContextHelper.isEditActionAvailable()) ||
+			//  !_isEditActionAvailable()) ||
 			((_fileShortcut == null) &&
-			 !_fileEntryDisplayContextHelper.isEditActionAvailable())) {
+			 !_isEditActionAvailable())) {
+			//  !_fileEntryDisplayContextHelper._isEditActionAvailable())) {
 
 			return;
 		}
@@ -1066,7 +1082,7 @@ public class UIItemsBuilder {
 	private UIItemsBuilder(
 		HttpServletRequest httpServletRequest, FileEntry fileEntry,
 		FileShortcut fileShortcut, FileVersion fileVersion,
-		ResourceBundle resourceBundle, DLTrashUtil dlTrashUtil,
+		ResourceBundle resourceBundle,/* dlTrashUtil, */
 		VersioningStrategy versioningStrategy, DLURLHelper dlURLHelper) {
 
 		try {
@@ -1081,15 +1097,15 @@ public class UIItemsBuilder {
 			_fileShortcut = fileShortcut;
 			_fileVersion = fileVersion;
 			_resourceBundle = resourceBundle;
-			_dlTrashUtil = dlTrashUtil;
+			// _dlTrashUtil = dlTrashUtil;
 			_versioningStrategy = versioningStrategy;
 			_dlURLHelper = dlURLHelper;
 
 			_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-			_fileEntryDisplayContextHelper = new FileEntryDisplayContextHelper(
-				_themeDisplay.getPermissionChecker(), _fileEntry);
+			// _fileEntryDisplayContextHelper = new FileEntryDisplayContextHelper(
+			// 	_themeDisplay.getPermissionChecker(), _fileEntry);
 
 			_fileShortcutDisplayContextHelper =
 				new FileShortcutDisplayContextHelper(
@@ -1300,7 +1316,7 @@ public class UIItemsBuilder {
 
 	private boolean _isFileEntryTrashable() throws PortalException {
 		if (_fileEntry.isRepositoryCapabilityProvided(TrashCapability.class) &&
-			_isTrashEnabled()) {
+			_isTrashEnabled(_themeDisplay.getScopeGroupId(), _getRepositoryId())) {
 
 			return true;
 		}
@@ -1310,7 +1326,7 @@ public class UIItemsBuilder {
 
 	private boolean _isFileShortcutTrashable() throws PortalException {
 		if (_fileShortcutDisplayContextHelper.isDLFileShortcut() &&
-			_isTrashEnabled()) {
+			_isTrashEnabled(_themeDisplay.getScopeGroupId(), _getRepositoryId())) {
 
 			return true;
 		}
@@ -1360,33 +1376,182 @@ public class UIItemsBuilder {
 		return _ieOnWin32;
 	}
 
-	private boolean _isTrashEnabled() throws PortalException {
-		if (_trashEnabled != null) {
-			return _trashEnabled;
-		}
+	// private boolean _isTrashEnabled() throws PortalException {
+	// 	if (_trashEnabled != null) {
+	// 		return _trashEnabled;
+	// 	}
 
-		_trashEnabled = false;
+	// 	_trashEnabled = false;
 
-		if (_dlTrashUtil == null) {
-			return _trashEnabled;
-		}
+	// 	if (_dlTrashUtil == null) {
+	// 		return _trashEnabled;
+	// 	}
 
-		_trashEnabled = _dlTrashUtil.isTrashEnabled(
-			_themeDisplay.getScopeGroupId(), _fileEntry.getRepositoryId());
+	// 	_trashEnabled = _dlTrashUtil.isTrashEnabled(
+	// 		_themeDisplay.getScopeGroupId(), _fileEntry.getRepositoryId());
 
-		return _trashEnabled;
-	}
+	// 	return _trashEnabled;
+	// }
 
 	private boolean _isWebDAVEnabled() {
 		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
 
 		return portletDisplay.isWebDAVEnabled();
 	}
+
+
+
+	private boolean _isTrashEnabled(long groupId, long repositoryId) {
+		try {
+			if (_trashEnabled != null) {
+				return _trashEnabled;
+			}
+			
+			// 1. Repositories externes = pas de corbeille
+			if (repositoryId != groupId) {
+				return false;
+			}
+			
+			// 2. Vérifier que le groupe existe et est actif
+			Group group = GroupLocalServiceUtil.fetchGroup(groupId);
+			if (group == null || !group.isActive()) {
+				return false;
+			}
+			
+			// 3. Vérifications multiples pour s'assurer que la corbeille est vraiment activée
+			
+			// 3a. Vérifier via TrashHandler
+			TrashHandler trashHandler = TrashHandlerRegistryUtil.getTrashHandler(
+				DLFolder.class.getName());
+			if (trashHandler == null) {
+				return false;
+			}
+			
+			// 3b. Vérifier qu'on peut accéder aux services de corbeille
+			try {
+				TrashEntryLocalServiceUtil.getEntriesCount(groupId);
+			} catch (Exception e) {
+				return false;
+			}
+			
+			// 3c. Vérifier la configuration globale si possible
+			try {
+				CompanyLocalServiceUtil.getCompany(group.getCompanyId());
+				// Si on arrive ici, la company existe et les services sont disponibles
+			} catch (Exception e) {
+				return false;
+			}
+			
+			return true;
+			
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private long _getRepositoryId() {
+		if (_repositoryId != null) {
+			return _repositoryId;
+		}
+
+		Folder folder = _getFolder();
+
+		if (folder != null) {
+			_repositoryId = folder.getRepositoryId();
+		}
+		else {
+			_repositoryId = GetterUtil.getLong(
+				(String)_httpServletRequest.getAttribute(
+					"view.jsp-repositoryId"));
+		}
+
+		return _repositoryId;
+	}
+
+	private Folder _getFolder() {
+		if (_folder != null) {
+			return _folder;
+		}
+
+		ResultRow row = (ResultRow)_httpServletRequest.getAttribute(
+			WebKeys.SEARCH_CONTAINER_RESULT_ROW);
+
+		if (row == null) {
+			_folder = (Folder)_httpServletRequest.getAttribute(
+				"info_panel.jsp-folder");
+		}
+		else {
+			if (row.getObject() instanceof Folder) {
+				_folder = (Folder)row.getObject();
+			}
+		}
+
+		return _folder;
+	}
+
+	private boolean _isDownloadActionAvailable() throws PortalException {
+		try {
+			if (_fileEntry == null) {
+				return false;
+			}
+			
+			// Si le fichier est dans la corbeille, pas de téléchargement
+			if (_fileEntry.isInTrash()) {
+				return false;
+			}
+			
+			PermissionChecker permissionChecker = _themeDisplay.getPermissionChecker();
+			
+			// Vérification des permissions VIEW sur le fichier
+			if (!permissionChecker.hasPermission(
+					_fileEntry.getGroupId(),
+					DLFileEntry.class.getName(),
+					_fileEntry.getFileEntryId(),
+					ActionKeys.VIEW)) {
+				return false;
+			}
+	
+			// Vérification des permissions VIEW sur le dossier parent
+			if (!permissionChecker.hasPermission(
+					_fileEntry.getGroupId(),
+					DLFolder.class.getName(),
+					_fileEntry.getFolderId(),
+					ActionKeys.VIEW)) {
+				return false;
+			}
+			
+			return true;
+			
+		} catch (Exception e) {
+			_log.error(
+			"Unable to check _isDownloadActionAvailable for file : " + _fileEntry, e);
+			return false;
+		}
+	}
+
+	private boolean _isEditActionAvailable() throws PortalException {
+		try {
+			return _fileEntry != null && 
+				!_fileEntry.isInTrash() && 
+				_themeDisplay.getPermissionChecker().hasPermission(
+					_fileEntry.getGroupId(),
+					DLFileEntry.class.getName(),
+					_fileEntry.getFileEntryId(),
+					ActionKeys.UPDATE);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+
+	private Long _repositoryId;
+	private Folder _folder;
+
 	private String _currentURL;
-	private final DLTrashUtil _dlTrashUtil;
+	// private final DLTrashUtil _dlTrashUtil;
 	private final DLURLHelper _dlURLHelper;
 	private final FileEntry _fileEntry;
-	private final FileEntryDisplayContextHelper _fileEntryDisplayContextHelper;
+	// private final FileEntryDisplayContextHelper _fileEntryDisplayContextHelper;
 	private FileShortcut _fileShortcut;
 	private final FileShortcutDisplayContextHelper
 		_fileShortcutDisplayContextHelper;
