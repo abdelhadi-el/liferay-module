@@ -36,7 +36,7 @@ import com.liferay.document.library.web.internal.display.context.logic.UIItemsBu
 import com.liferay.document.library.web.internal.display.context.util.JSPRenderer;
 // import com.liferay.document.library.web.internal.util.DLTrashUtil;
 import com.liferay.dynamic.data.mapping.exception.StorageException;
-import com.liferay.dynamic.data.mapping.kernel.DDMStructure;
+// import com.liferay.dynamic.data.mapping.kernel.DDMStructure;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 // import com.liferay.dynamic.data.mapping.storage.StorageEngine;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -80,7 +80,9 @@ import com.liferay.document.library.web.internal.settings.DLPortletInstanceSetti
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.document.library.kernel.model.DLFileEntry;
-// import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
+
 /**
  * @author Adolfo P??rez
  */
@@ -209,16 +211,51 @@ public class DefaultDLViewFileVersionDisplayContext
 
 	
 	// @Override
-	public DDMStructure getDDMStructures() {
+	// public  List<DDMStructure> getDDMStructures() {
+	// 	if (_ddmStructures != null) {
+	// 		return _ddmStructures;
+	// 	}
+
+	// 	if (_isDLFileVersion()) {
+	// 		DLFileVersion dlFileVersion = (DLFileVersion)_fileVersion.getModel();
+	// 		_ddmStructures = dlFileVersion.getDDMStructures();
+	// 	} else {
+	// 		_ddmStructures = Collections.emptyList();
+	// 	}
+
+	// 	return _ddmStructures;
+	// }
+
+	@Override
+	public List<DDMStructure> getDDMStructures() throws PortalException {
 		if (_ddmStructures != null) {
 			return _ddmStructures;
 		}
 
 		if (_isDLFileVersion()) {
 			DLFileVersion dlFileVersion = (DLFileVersion)_fileVersion.getModel();
-			_ddmStructures = dlFileVersion.getDDMStructures();
+			
+			// Récupérer les structures kernel
+			List<com.liferay.dynamic.data.mapping.kernel.DDMStructure> kernelStructures = 
+				dlFileVersion.getDDMStructures();
+			
+			// Convertir vers l'API model en préservant toutes les données
+			List<DDMStructure> modelStructures = new ArrayList<>();
+			for (com.liferay.dynamic.data.mapping.kernel.DDMStructure kernelStructure : kernelStructures) {
+				try {
+					// Récupérer la structure via l'API publique avec le même ID
+					DDMStructure modelStructure = DDMStructureLocalServiceUtil.getDDMStructure(
+						kernelStructure.getStructureId());
+					modelStructures.add(modelStructure);
+				} catch (Exception e) {
+					_log.error("Could not convert DDMStructure with ID: " + 
+						kernelStructure.getStructureId(), e);
+				}
+			}
+			
+			_ddmStructures = modelStructures;
 		} else {
-			_ddmStructures = null;
+			_ddmStructures = Collections.emptyList();
 		}
 
 		return _ddmStructures;
@@ -250,7 +287,7 @@ public class DefaultDLViewFileVersionDisplayContext
 		return LanguageUtil.get(_resourceBundle, "comments");
 	}
 
-	// @Override
+	@Override
 	public String getIconFileMimeType() {
 		if (_dlMimeTypeDisplayContext == null) {
 			return "document-default";
@@ -338,6 +375,7 @@ public class DefaultDLViewFileVersionDisplayContext
 	// 	return false;
 	// }
 
+	@Override
 	public boolean isActionsVisible() {
 		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
 		DLPortletInstanceSettings dlPortletInstanceSettings = 
@@ -625,7 +663,7 @@ public class DefaultDLViewFileVersionDisplayContext
 	private static final Log _log = LogFactoryUtil.getLog(
 		DefaultDLViewFileVersionDisplayContext.class);
 
-	private List<DDMStructure> _ddmStructures;
+	private List<com.liferay.dynamic.data.mapping.model.DDMStructure> _ddmStructures;
 	private final DLMimeTypeDisplayContext _dlMimeTypeDisplayContext;
 	// private final DLPortletInstanceSettingsHelper
 	// 	_dlPortletInstanceSettingsHelper;
