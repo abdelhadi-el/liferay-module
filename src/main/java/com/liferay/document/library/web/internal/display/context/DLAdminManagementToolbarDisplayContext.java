@@ -27,11 +27,11 @@ import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalServiceUt
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.document.library.web.internal.constants.DLWebKeys;
 // import com.liferay.document.library.web.internal.display.context.logic.DLPortletInstanceSettingsHelper;
-import com.liferay.document.library.web.internal.display.context.util.DLRequestHelper;
+// import com.liferay.document.library.web.internal.display.context.util.DLRequestHelper;
 import com.liferay.document.library.web.internal.security.permission.resource.DLFileEntryPermission;
 import com.liferay.document.library.web.internal.security.permission.resource.DLFolderPermission;
 import com.liferay.document.library.web.internal.settings.DLPortletInstanceSettings;
-import com.liferay.document.library.web.internal.util.DLTrashUtil;
+// import com.liferay.document.library.web.internal.util.DLTrashUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
@@ -79,7 +79,16 @@ import javax.portlet.PortletURL;
 import javax.servlet.http.HttpServletRequest;
 
 import com.liferay.portal.kernel.theme.PortletDisplay;
-
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.trash.service.TrashEntryLocalServiceUtil;
+import com.liferay.portal.kernel.trash.TrashHandler;
+import com.liferay.portal.kernel.trash.TrashHandlerRegistryUtil;
+import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.repository.capabilities.TrashCapability;
+import com.liferay.portal.kernel.dao.search.ResultRow;
+import javax.portlet.PortletPreferences;
+import com.liferay.portal.kernel.util.GetterUtil;
 /**
  * @author Alejandro Tard??n
  */
@@ -99,17 +108,96 @@ public class DLAdminManagementToolbarDisplayContext {
 		_currentURLObj = PortletURLUtil.getCurrent(
 			liferayPortletRequest, liferayPortletResponse);
 
-		_dlRequestHelper = new DLRequestHelper(_httpServletRequest);
+		// _dlRequestHelper = new DLRequestHelper(_httpServletRequest);
 
 		// _dlPortletInstanceSettingsHelper = new DLPortletInstanceSettingsHelper(
 		// 	_dlRequestHelper);
 
-		_dlTrashUtil = (DLTrashUtil)_httpServletRequest.getAttribute(
-			DLWebKeys.DOCUMENT_LIBRARY_TRASH_UTIL);
+		// _dlTrashUtil = (DLTrashUtil)_httpServletRequest.getAttribute(
+		// 	DLWebKeys.DOCUMENT_LIBRARY_TRASH_UTIL);
 
 		_themeDisplay = (ThemeDisplay)_httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 	}
+
+	public boolean isTrashEnabled() throws PortalException {
+		Folder folder = _getFolder();
+
+		if (((folder == null) ||
+			folder.isRepositoryCapabilityProvided(TrashCapability.class)) &&
+			_isTrashEnabled(_themeDisplay.getScopeGroupId(), _getRepositoryId())) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private Folder _getFolder() {
+		if (_folder != null) {
+			return _folder;
+		}
+
+		ResultRow row = (ResultRow)_httpServletRequest.getAttribute(
+			WebKeys.SEARCH_CONTAINER_RESULT_ROW);
+
+		if (row == null) {
+			_folder = (Folder)_httpServletRequest.getAttribute(
+				"info_panel.jsp-folder");
+		}
+		else {
+			if (row.getObject() instanceof Folder) {
+				_folder = (Folder)row.getObject();
+			}
+		}
+
+		return _folder;
+	}
+
+	private boolean _isTrashEnabled(long groupId, long repositoryId) {
+		try {
+			// 1. Repositories externes = pas de corbeille
+			if (repositoryId != groupId) {
+				return false;
+			}
+			
+			// 2. Vérifier que le groupe existe et est actif
+			Group group = GroupLocalServiceUtil.fetchGroup(groupId);
+			if (group == null || !group.isActive()) {
+				return false;
+			}
+			
+			// 3. Vérifications multiples pour s'assurer que la corbeille est vraiment activée
+			
+			// 3a. Vérifier via TrashHandler
+			TrashHandler trashHandler = TrashHandlerRegistryUtil.getTrashHandler(
+				DLFolder.class.getName());
+			if (trashHandler == null) {
+				return false;
+			}
+			
+			// 3b. Vérifier qu'on peut accéder aux services de corbeille
+			try {
+				TrashEntryLocalServiceUtil.getEntriesCount(groupId);
+			} catch (Exception e) {
+				return false;
+			}
+			
+			// 3c. Vérifier la configuration globale si possible
+			try {
+				CompanyLocalServiceUtil.getCompany(group.getCompanyId());
+				// Si on arrive ici, la company existe et les services sont disponibles
+			} catch (Exception e) {
+				return false;
+			}
+			
+			return true;
+			
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
 
 	public List<DropdownItem> getActionDropdownItems() throws PortalException {
 		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
@@ -216,9 +304,9 @@ public class DLAdminManagementToolbarDisplayContext {
 						dropdownItem -> {
 							dropdownItem.putData("action", "deleteEntries");
 
-							if (_dlTrashUtil.isTrashEnabled(
+							if ( isTrashEnabled() /*_dlTrashUtil.isTrashEnabled(
 									scopeGroup.getGroupId(),
-									_getRepositoryId())) {
+									_getRepositoryId()) */ ) {
 
 								dropdownItem.setIcon("trash");
 								dropdownItem.setLabel(
@@ -656,8 +744,27 @@ public class DLAdminManagementToolbarDisplayContext {
 		return true;
 	}
 
+	// public boolean isShowSearch() {
+	// 	PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
+    // 	DLPortletInstanceSettings dlPortletInstanceSettings = 
+	// 	 DLPortletInstanceSettings.getInstance(_themeDisplay.getLayout(), portletDisplay.getId());
+    
+	// 	return dlPortletInstanceSettings.isShowSearch();
+	// 	// return _dlPortletInstanceSettingsHelper.isShowSearch();
+	// }
+
 	public boolean isShowSearch() {
-		return _dlPortletInstanceSettingsHelper.isShowSearch();
+		// Accès direct à la configuration du portlet
+		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
+		
+		// Récupération des préférences comme dans les autres méthodes
+		PortletPreferences portletPreferences = portletDisplay.getPortletSetup();
+		
+		// La clé exacte utilisée par l'ancien helper
+		return GetterUtil.getBoolean(
+			portletPreferences.getValue("showSearch", "true"), 
+			true
+		);
 	}
 
 	private PortletURL _getCurrentSortingURL() {
@@ -698,8 +805,11 @@ public class DLAdminManagementToolbarDisplayContext {
 	}
 
 	private String[] _getDisplayViews() {
-		DLPortletInstanceSettings dlPortletInstanceSettings =
-			_dlRequestHelper.getDLPortletInstanceSettings();
+		// DLPortletInstanceSettings dlPortletInstanceSettings =
+		// 	_dlRequestHelper.getDLPortletInstanceSettings();
+		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
+		DLPortletInstanceSettings dlPortletInstanceSettings = 
+			DLPortletInstanceSettings.getInstance(_themeDisplay.getLayout(), portletDisplay.getId());
 
 		return dlPortletInstanceSettings.getDisplayViews();
 	}
@@ -949,12 +1059,13 @@ public class DLAdminManagementToolbarDisplayContext {
 	private final DLAdminDisplayContext _dlAdminDisplayContext;
 	// private final DLPortletInstanceSettingsHelper
 	// 	_dlPortletInstanceSettingsHelper;
-	private final DLRequestHelper _dlRequestHelper;
-	private final DLTrashUtil _dlTrashUtil;
+	// private final DLRequestHelper _dlRequestHelper;
+	// private final DLTrashUtil _dlTrashUtil;
 	private Boolean _hasValidAssetVocabularies;
 	private final HttpServletRequest _httpServletRequest;
 	private final LiferayPortletRequest _liferayPortletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
 	private final ThemeDisplay _themeDisplay;
+	private Folder _folder;
 
 }
