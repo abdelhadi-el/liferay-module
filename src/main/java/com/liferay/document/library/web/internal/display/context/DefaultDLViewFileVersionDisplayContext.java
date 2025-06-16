@@ -28,17 +28,17 @@ import com.liferay.document.library.preview.exception.DLPreviewGenerationInProce
 import com.liferay.document.library.preview.exception.DLPreviewSizeException;
 import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.document.library.web.internal.constants.DLWebKeys;
-import com.liferay.document.library.web.internal.display.context.logic.DLPortletInstanceSettingsHelper;
-import com.liferay.document.library.web.internal.display.context.logic.FileEntryDisplayContextHelper;
-import com.liferay.document.library.web.internal.display.context.logic.FileVersionDisplayContextHelper;
+// import com.liferay.document.library.web.internal.display.context.logic.DLPortletInstanceSettingsHelper;
+// import com.liferay.document.library.web.internal.display.context.logic.FileEntryDisplayContextHelper;
+// import com.liferay.document.library.web.internal.display.context.logic.FileVersionDisplayContextHelper;
 import com.liferay.document.library.web.internal.display.context.logic.UIItemsBuilder;
-import com.liferay.document.library.web.internal.display.context.util.DLRequestHelper;
+// import com.liferay.document.library.web.internal.display.context.util.DLRequestHelper;
 import com.liferay.document.library.web.internal.display.context.util.JSPRenderer;
-import com.liferay.document.library.web.internal.util.DLTrashUtil;
+// import com.liferay.document.library.web.internal.util.DLTrashUtil;
 import com.liferay.dynamic.data.mapping.exception.StorageException;
 import com.liferay.dynamic.data.mapping.kernel.DDMStructure;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
-import com.liferay.dynamic.data.mapping.storage.StorageEngine;
+// import com.liferay.dynamic.data.mapping.storage.StorageEngine;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -65,26 +65,47 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.liferay.portal.kernel.theme.PortletDisplay;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.JavaConstants;
+import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
+import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.util.PortalUtil;
+// import com.liferay.document.library.kernel.service.permission.DLFileEntryPermission;
+import com.liferay.document.library.kernel.security.permission.resource.DLFileEntryPermission;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.dynamic.data.mapping.storage.DDMStorageEngineManager;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.document.library.web.internal.settings.DLPortletInstanceSettings;
+import com.liferay.document.library.kernel.model.DLFolder;
+
 /**
  * @author Adolfo P??rez
  */
 public class DefaultDLViewFileVersionDisplayContext
 	implements DLViewFileVersionDisplayContext {
 
+	private ThemeDisplay _themeDisplay;
+	private final LiferayPortletRequest _liferayPortletRequest;
+	private final LiferayPortletResponse _liferayPortletResponse;
+	private final FileEntry _fileEntry;
+	private final DDMStorageEngineManager _ddmStorageEngineManager;
+
+
 	public DefaultDLViewFileVersionDisplayContext(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, FileShortcut fileShortcut,
 			DLMimeTypeDisplayContext dlMimeTypeDisplayContext,
-			ResourceBundle resourceBundle, StorageEngine storageEngine,
-			DLTrashUtil dlTrashUtil,
+			ResourceBundle resourceBundle, DDMStorageEngineManager ddmStorageEngineManager,/*  StorageEngine storageEngine,*/
+			// DLTrashUtil dlTrashUtil,
 			DLPreviewRendererProvider dlPreviewRendererProvider,
 			VersioningStrategy versioningStrategy, DLURLHelper dlURLHelper)
 		throws PortalException {
 
 		this(
 			httpServletRequest, fileShortcut.getFileVersion(), fileShortcut,
-			dlMimeTypeDisplayContext, resourceBundle, storageEngine,
-			dlTrashUtil, dlPreviewRendererProvider, versioningStrategy,
+			dlMimeTypeDisplayContext, resourceBundle, ddmStorageEngineManager, /* storageEngine, 
+			dlTrashUtil, */dlPreviewRendererProvider, versioningStrategy,
 			dlURLHelper);
 	}
 
@@ -92,15 +113,26 @@ public class DefaultDLViewFileVersionDisplayContext
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse, FileVersion fileVersion,
 		DLMimeTypeDisplayContext dlMimeTypeDisplayContext,
-		ResourceBundle resourceBundle, StorageEngine storageEngine,
-		DLTrashUtil dlTrashUtil,
+		ResourceBundle resourceBundle, DDMStorageEngineManager ddmStorageEngineManager, /*StorageEngine storageEngine,
+		DLTrashUtil dlTrashUtil,  */
 		DLPreviewRendererProvider dlPreviewRendererProvider,
 		VersioningStrategy versioningStrategy, DLURLHelper dlURLHelper) {
 
 		this(
 			httpServletRequest, fileVersion, null, dlMimeTypeDisplayContext,
-			resourceBundle, storageEngine, dlTrashUtil,
+			resourceBundle, ddmStorageEngineManager, /* storageEngine, dlTrashUtil, */
 			dlPreviewRendererProvider, versioningStrategy, dlURLHelper);
+	}
+
+	@Override
+	public boolean hasApprovedVersion() {
+		try {
+			FileEntry fileEntry = _fileVersion.getFileEntry();
+			FileVersion latestFileVersion = fileEntry.getLatestFileVersion();
+			return latestFileVersion.getStatus() == WorkflowConstants.STATUS_APPROVED;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	@Override
@@ -113,42 +145,85 @@ public class DefaultDLViewFileVersionDisplayContext
 			_fileVersion.getMimeType());
 	}
 
-	@Override
-	public DDMFormValues getDDMFormValues(DDMStructure ddmStructure)
-		throws PortalException {
+	// @Override
+	// public DDMFormValues getDDMFormValues(DDMStructure ddmStructure)
+	// 	throws PortalException {
 
-		DLFileEntryMetadata dlFileEntryMetadata =
-			DLFileEntryMetadataLocalServiceUtil.getFileEntryMetadata(
-				ddmStructure.getStructureId(), _fileVersion.getFileVersionId());
+	// 	DLFileEntryMetadata dlFileEntryMetadata =
+	// 		DLFileEntryMetadataLocalServiceUtil.getFileEntryMetadata(
+	// 			ddmStructure.getStructureId(), _fileVersion.getFileVersionId());
 
-		return _storageEngine.getDDMFormValues(
-			dlFileEntryMetadata.getDDMStorageId());
+	// 	return _storageEngine.getDDMFormValues(
+	// 		dlFileEntryMetadata.getDDMStorageId());
+	// }
+
+	// @Override
+	// public DDMFormValues getDDMFormValues(long classPK)
+	// 	throws StorageException {
+
+	// 	return _storageEngine.getDDMFormValues(classPK);
+	// }
+
+	// @Override
+	public DDMFormValues getDDMFormValues(DDMStructure ddmStructure) throws PortalException {
+		try {
+			DLFileEntryMetadata dlFileEntryMetadata =
+				DLFileEntryMetadataLocalServiceUtil.getFileEntryMetadata(
+					ddmStructure.getStructureId(), _fileVersion.getFileVersionId());
+
+			return _ddmStorageEngineManager.getDDMFormValues(dlFileEntryMetadata.getDDMStorageId());
+		} catch (Exception e) {
+			throw new PortalException("Unable to get DDM form values", e);
+		}
 	}
 
-	@Override
-	public DDMFormValues getDDMFormValues(long classPK)
-		throws StorageException {
-
-		return _storageEngine.getDDMFormValues(classPK);
+	// @Override
+	public DDMFormValues getDDMFormValues(long classPK) throws PortalException {
+		try {
+			return _ddmStorageEngineManager.getDDMFormValues(classPK);
+		} catch (Exception e) {
+			throw new PortalException("Unable to get DDM form values for classPK: " + classPK, e);
+		}
 	}
 
+	// @Override
+	// public List<DDMStructure> getDDMStructures() throws PortalException {
+	// 	if (_ddmStructures != null) {
+	// 		return _ddmStructures;
+	// 	}
+
+	// 	if (_fileVersionDisplayContextHelper.isDLFileVersion()) {
+	// 		DLFileVersion dlFileVersion =
+	// 			(DLFileVersion)_fileVersion.getModel();
+
+	// 		_ddmStructures = dlFileVersion.getDDMStructures();
+	// 	}
+	// 	else {
+	// 		_ddmStructures = Collections.emptyList();
+	// 	}
+
+	// 	return _ddmStructures;
+	// }
+
+	
 	@Override
 	public List<DDMStructure> getDDMStructures() throws PortalException {
 		if (_ddmStructures != null) {
 			return _ddmStructures;
 		}
 
-		if (_fileVersionDisplayContextHelper.isDLFileVersion()) {
-			DLFileVersion dlFileVersion =
-				(DLFileVersion)_fileVersion.getModel();
-
+		if (_isDLFileVersion()) {
+			DLFileVersion dlFileVersion = (DLFileVersion)_fileVersion.getModel();
 			_ddmStructures = dlFileVersion.getDDMStructures();
-		}
-		else {
+		} else {
 			_ddmStructures = Collections.emptyList();
 		}
 
 		return _ddmStructures;
+	}
+
+	private boolean _isDLFileVersion() {
+		return _fileVersion.getModel() instanceof DLFileVersion;
 	}
 
 	@Override
@@ -183,7 +258,7 @@ public class DefaultDLViewFileVersionDisplayContext
 			_fileVersion.getMimeType());
 	}
 
-	@Override
+	// @Override
 	public Menu getMenu() throws PortalException {
 		Menu menu = new Menu();
 
@@ -197,7 +272,7 @@ public class DefaultDLViewFileVersionDisplayContext
 		return menu;
 	}
 
-	@Override
+	// @Override
 	public List<ToolbarItem> getToolbarItems() throws PortalException {
 		List<ToolbarItem> toolbarItems = new ArrayList<>();
 
@@ -252,18 +327,86 @@ public class DefaultDLViewFileVersionDisplayContext
 		return false;
 	}
 
-	@Override
+	// @Override
+	// public boolean isActionsVisible() {
+	// 	if (_dlPortletInstanceSettingsHelper.isShowActions()) {
+	// 		return true;
+	// 	}
+
+	// 	return false;
+	// }
+
 	public boolean isActionsVisible() {
-		if (_dlPortletInstanceSettingsHelper.isShowActions()) {
+		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
+		DLPortletInstanceSettings dlPortletInstanceSettings = 
+			DLPortletInstanceSettings.getInstance(_themeDisplay.getLayout(), portletDisplay.getId());
+
+		if (dlPortletInstanceSettings.isShowActions()) {
 			return true;
 		}
 
 		return false;
 	}
 
+	// @Override
+	// public boolean isDownloadLinkVisible() throws PortalException {
+	// 	return _fileEntryDisplayContextHelper.isDownloadActionAvailable();
+	// }
+
 	@Override
 	public boolean isDownloadLinkVisible() throws PortalException {
-		return _fileEntryDisplayContextHelper.isDownloadActionAvailable();
+		return _hasDownloadPermission();
+	}
+
+	private boolean _hasDownloadPermission() {
+		try {
+			return DLFileEntryPermission.contains(
+				_themeDisplay.getPermissionChecker(), 
+				_fileEntry, 
+				ActionKeys.VIEW);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private boolean _isDownloadActionAvailable() throws PortalException {
+		try {
+			if (_fileEntry == null) {
+				return false;
+			}
+			
+			// Si le fichier est dans la corbeille, pas de téléchargement
+			if (_fileEntry.isInTrash()) {
+				return false;
+			}
+			
+			PermissionChecker permissionChecker = _themeDisplay.getPermissionChecker();
+			
+			// Vérification des permissions VIEW sur le fichier
+			if (!permissionChecker.hasPermission(
+					_fileEntry.getGroupId(),
+					DLFileEntry.class.getName(),
+					_fileEntry.getFileEntryId(),
+					ActionKeys.VIEW)) {
+				return false;
+			}
+			
+			// Vérification des permissions VIEW sur le dossier parent
+			if (!permissionChecker.hasPermission(
+					_fileEntry.getGroupId(),
+					DLFolder.class.getName(),
+					_fileEntry.getFolderId(),
+					ActionKeys.VIEW)) {
+				return false;
+			}
+			
+			return true;
+			
+		} catch (Exception e) {
+			_log.error(
+			"Unable to check _isDownloadActionAvailable for file : " + _fileEntry, e);
+			return false;
+		}
 	}
 
 	@Override
@@ -316,8 +459,8 @@ public class DefaultDLViewFileVersionDisplayContext
 		HttpServletRequest httpServletRequest, FileVersion fileVersion,
 		FileShortcut fileShortcut,
 		DLMimeTypeDisplayContext dlMimeTypeDisplayContext,
-		ResourceBundle resourceBundle, StorageEngine storageEngine,
-		DLTrashUtil dlTrashUtil,
+		ResourceBundle resourceBundle, DDMStorageEngineManager ddmStorageEngineManager,
+		/* DLTrashUtil dlTrashUtil, */
 		DLPreviewRendererProvider dlPreviewRendererProvider,
 		VersioningStrategy versioningStrategy, DLURLHelper dlURLHelper) {
 
@@ -325,32 +468,37 @@ public class DefaultDLViewFileVersionDisplayContext
 			_fileVersion = fileVersion;
 			_dlMimeTypeDisplayContext = dlMimeTypeDisplayContext;
 			_resourceBundle = resourceBundle;
-			_storageEngine = storageEngine;
+			// _storageEngine = storageEngine;
+			_ddmStorageEngineManager = ddmStorageEngineManager; // Changé de _storageEngine
 			_dlPreviewRendererProvider = dlPreviewRendererProvider;
 
-			DLRequestHelper dlRequestHelper = new DLRequestHelper(
-				httpServletRequest);
+			// DLRequestHelper dlRequestHelper = new DLRequestHelper(
+			// 	httpServletRequest);
 
-			_dlPortletInstanceSettingsHelper =
-				new DLPortletInstanceSettingsHelper(dlRequestHelper);
+			// _dlPortletInstanceSettingsHelper =
+			// 	new DLPortletInstanceSettingsHelper(dlRequestHelper);
 
 			FileEntry fileEntry = _getFileEntry(fileVersion);
 
-			_fileEntryDisplayContextHelper = new FileEntryDisplayContextHelper(
-				dlRequestHelper.getPermissionChecker(), fileEntry);
+			// Dans le constructeur
+			_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY);
+			_fileEntry = fileEntry;
 
-			_fileVersionDisplayContextHelper =
-				new FileVersionDisplayContextHelper(fileVersion);
+			// _fileEntryDisplayContextHelper = new FileEntryDisplayContextHelper(
+			// 	_themeDisplay.getPermissionChecker(), fileEntry);
+
+			// _fileVersionDisplayContextHelper =
+			// 	new FileVersionDisplayContextHelper(fileVersion);
 
 			if (fileShortcut == null) {
 				_uiItemsBuilder = new UIItemsBuilder(
 					httpServletRequest, fileEntry, fileVersion, _resourceBundle,
-					dlTrashUtil, versioningStrategy, dlURLHelper);
+					null, versioningStrategy, dlURLHelper);
 			}
 			else {
 				_uiItemsBuilder = new UIItemsBuilder(
 					httpServletRequest, fileShortcut, _resourceBundle,
-					dlTrashUtil, versioningStrategy, dlURLHelper);
+					null, versioningStrategy, dlURLHelper);
 			}
 		}
 		catch (PortalException portalException) {
@@ -477,15 +625,15 @@ public class DefaultDLViewFileVersionDisplayContext
 
 	private List<DDMStructure> _ddmStructures;
 	private final DLMimeTypeDisplayContext _dlMimeTypeDisplayContext;
-	private final DLPortletInstanceSettingsHelper
-		_dlPortletInstanceSettingsHelper;
+	// private final DLPortletInstanceSettingsHelper
+	// 	_dlPortletInstanceSettingsHelper;
 	private DLPreviewRendererProvider _dlPreviewRendererProvider;
-	private final FileEntryDisplayContextHelper _fileEntryDisplayContextHelper;
+	// private final FileEntryDisplayContextHelper _fileEntryDisplayContextHelper;
 	private final FileVersion _fileVersion;
-	private final FileVersionDisplayContextHelper
-		_fileVersionDisplayContextHelper;
+	// private final FileVersionDisplayContextHelper
+	// 	_fileVersionDisplayContextHelper;
 	private final ResourceBundle _resourceBundle;
-	private final StorageEngine _storageEngine;
+	// private final StorageEngine _storageEngine;
 	private final UIItemsBuilder _uiItemsBuilder;
 
 }
