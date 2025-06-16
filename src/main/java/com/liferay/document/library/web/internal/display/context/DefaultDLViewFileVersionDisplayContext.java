@@ -82,6 +82,11 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
+// import com.liferay.portal.kernel.servlet.taglib.ui.JavaScriptToolbarItem;
+// import com.liferay.portal.kernel.servlet.taglib.ui.URLToolbarItem;
+import java.util.Map;
 
 /**
  * @author Adolfo P??rez
@@ -332,6 +337,99 @@ public class DefaultDLViewFileVersionDisplayContext
 	}
 
 	@Override
+	public List<DropdownItem> getActionDropdownItems() throws PortalException {
+		if (!isActionsVisible()) {
+			return Collections.emptyList();
+		}
+
+		return new DropdownItemList() {
+			{
+				// Download action
+				if (_isDownloadActionAvailable()) {
+					add(dropdownItem -> {
+						dropdownItem.putData("action", "download");
+						dropdownItem.setIcon("download");
+						dropdownItem.setLabel(LanguageUtil.get(_resourceBundle, "download"));
+						dropdownItem.setQuickAction(true);
+					});
+				}
+
+				// Edit action
+				if (_isEditActionAvailable()) {
+					add(dropdownItem -> {
+						dropdownItem.putData("action", "edit");
+						dropdownItem.setIcon("pencil");
+						dropdownItem.setLabel(LanguageUtil.get(_resourceBundle, "edit"));
+						dropdownItem.setQuickAction(true);
+					});
+				}
+
+				// Move action
+				if (_isMoveActionAvailable()) {
+					add(dropdownItem -> {
+						dropdownItem.putData("action", "move");
+						dropdownItem.setIcon("move-folder");
+						dropdownItem.setLabel(LanguageUtil.get(_resourceBundle, "move"));
+						dropdownItem.setQuickAction(true);
+					});
+				}
+
+				// Copy action (votre fonctionnalité personnalisée)
+				if (_isMoveActionAvailable()) { // même condition que move
+					add(dropdownItem -> {
+						dropdownItem.putData("action", "copy");
+						dropdownItem.setIcon("documents-and-media");
+						dropdownItem.setLabel(LanguageUtil.get(_resourceBundle, "copy"));
+						dropdownItem.setQuickAction(true);
+					});
+				}
+
+				// Delete/Trash action
+				if (_isDeleteActionAvailable()) {
+					add(dropdownItem -> {
+						dropdownItem.putData("action", "deleteEntries");
+						dropdownItem.setIcon("trash");
+						dropdownItem.setLabel(LanguageUtil.get(_resourceBundle, "move-to-recycle-bin"));
+						dropdownItem.setQuickAction(true);
+					});
+				}
+			}
+		};
+	}
+
+	// Méthodes helper simplifiées
+	private boolean _isEditActionAvailable() throws PortalException {
+		try {
+			return _fileEntry != null && 
+				!_fileEntry.isInTrash() && 
+				_themeDisplay.getPermissionChecker().hasPermission(
+					_fileEntry.getGroupId(),
+					DLFileEntry.class.getName(),
+					_fileEntry.getFileEntryId(),
+					ActionKeys.UPDATE);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private boolean _isMoveActionAvailable() throws PortalException {
+		return _isEditActionAvailable(); // même logique
+	}
+
+	private boolean _isDeleteActionAvailable() throws PortalException {
+		try {
+			return _fileEntry != null && 
+				!_fileEntry.isInTrash() && 
+				_themeDisplay.getPermissionChecker().hasPermission(
+					_fileEntry.getGroupId(),
+					DLFileEntry.class.getName(),
+					_fileEntry.getFileEntryId(),
+					ActionKeys.DELETE);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	@Override
 	public UUID getUuid() {
 		return _UUID;
 	}
@@ -540,6 +638,8 @@ public class DefaultDLViewFileVersionDisplayContext
 					httpServletRequest, fileShortcut, _resourceBundle,
 					null, versioningStrategy, dlURLHelper);
 			}
+			_log.info("Using UIItemsBuilder: " + _uiItemsBuilder.getClass().getName());
+
 		}
 		catch (PortalException portalException) {
 			throw new SystemException(

@@ -26,7 +26,7 @@ import com.liferay.document.library.kernel.service.DLAppServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalServiceUtil;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.document.library.web.internal.constants.DLWebKeys;
-import com.liferay.document.library.web.internal.display.context.logic.DLPortletInstanceSettingsHelper;
+// import com.liferay.document.library.web.internal.display.context.logic.DLPortletInstanceSettingsHelper;
 import com.liferay.document.library.web.internal.display.context.util.DLRequestHelper;
 import com.liferay.document.library.web.internal.security.permission.resource.DLFileEntryPermission;
 import com.liferay.document.library.web.internal.security.permission.resource.DLFolderPermission;
@@ -78,6 +78,8 @@ import javax.portlet.PortletURL;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.liferay.portal.kernel.theme.PortletDisplay;
+
 /**
  * @author Alejandro Tard??n
  */
@@ -99,8 +101,8 @@ public class DLAdminManagementToolbarDisplayContext {
 
 		_dlRequestHelper = new DLRequestHelper(_httpServletRequest);
 
-		_dlPortletInstanceSettingsHelper = new DLPortletInstanceSettingsHelper(
-			_dlRequestHelper);
+		// _dlPortletInstanceSettingsHelper = new DLPortletInstanceSettingsHelper(
+		// 	_dlRequestHelper);
 
 		_dlTrashUtil = (DLTrashUtil)_httpServletRequest.getAttribute(
 			DLWebKeys.DOCUMENT_LIBRARY_TRASH_UTIL);
@@ -110,7 +112,11 @@ public class DLAdminManagementToolbarDisplayContext {
 	}
 
 	public List<DropdownItem> getActionDropdownItems() throws PortalException {
-		if (!_dlPortletInstanceSettingsHelper.isShowActions()) {
+		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
+		DLPortletInstanceSettings dlPortletInstanceSettings = 
+			DLPortletInstanceSettings.getInstance(_themeDisplay.getLayout(), portletDisplay.getId());
+
+		if (!dlPortletInstanceSettings.isShowActions()) {
 			return null;
 		}
 
@@ -941,8 +947,8 @@ public class DLAdminManagementToolbarDisplayContext {
 
 	private final PortletURL _currentURLObj;
 	private final DLAdminDisplayContext _dlAdminDisplayContext;
-	private final DLPortletInstanceSettingsHelper
-		_dlPortletInstanceSettingsHelper;
+	// private final DLPortletInstanceSettingsHelper
+	// 	_dlPortletInstanceSettingsHelper;
 	private final DLRequestHelper _dlRequestHelper;
 	private final DLTrashUtil _dlTrashUtil;
 	private Boolean _hasValidAssetVocabularies;
