@@ -41,7 +41,7 @@ import com.liferay.portal.kernel.repository.capabilities.TrashCapability;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.portal.kernel.repository.model.FileVersion;
-import com.liferay.portal.kernel.servlet.BrowserSnifferUtil;
+// import com.liferay.portal.kernel.servlet.BrowserSnifferUtil;
 import com.liferay.portal.kernel.servlet.taglib.ui.DeleteMenuItem;
 import com.liferay.portal.kernel.servlet.taglib.ui.JavaScriptMenuItem;
 import com.liferay.portal.kernel.servlet.taglib.ui.JavaScriptToolbarItem;
@@ -96,6 +96,11 @@ import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
+import com.liferay.document.library.kernel.model.DLFileShortcut;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.BrowserSnifferUtil;
 
 /**
  * @author Iv??n Zaera
@@ -139,8 +144,8 @@ public class UIItemsBuilder {
 		throws PortalException {
 
 		if ((_fileShortcut != null) ||
-			!_fileEntryDisplayContextHelper.
-				isCancelCheckoutDocumentActionAvailable()) {
+			!_isCancelCheckoutDocumentActionAvailable()) {
+			// !_fileEntryDisplayContextHelper.isCancelCheckoutDocumentActionAvailable()) {
 
 			return;
 		}
@@ -159,8 +164,8 @@ public class UIItemsBuilder {
 	public void addCancelCheckoutToolbarItem(List<ToolbarItem> toolbarItems)
 		throws PortalException {
 
-		if (!_fileEntryDisplayContextHelper.
-				isCancelCheckoutDocumentActionAvailable()) {
+		if (!_isCancelCheckoutDocumentActionAvailable()) {
+		// if (!_fileEntryDisplayContextHelper.isCancelCheckoutDocumentActionAvailable()) {
 
 			return;
 		}
@@ -176,7 +181,8 @@ public class UIItemsBuilder {
 		throws PortalException {
 
 		if ((_fileShortcut != null) ||
-			!_fileEntryDisplayContextHelper.isCheckinActionAvailable()) {
+			!_isCheckinActionAvailable()) {
+			// !_fileEntryDisplayContextHelper.isCheckinActionAvailable()) {
 
 			return;
 		}
@@ -187,7 +193,8 @@ public class UIItemsBuilder {
 	public void addCheckinToolbarItem(List<ToolbarItem> toolbarItems)
 		throws PortalException {
 
-		if (!_fileEntryDisplayContextHelper.isCheckinActionAvailable()) {
+		if (!_isCheckinActionAvailable()) {
+		// if (!_fileEntryDisplayContextHelper.isCheckinActionAvailable()) {
 			return;
 		}
 
@@ -229,8 +236,8 @@ public class UIItemsBuilder {
 		throws PortalException {
 
 		if ((_fileShortcut != null) ||
-			!_fileEntryDisplayContextHelper.
-				isCheckoutDocumentActionAvailable()) {
+			!_isCheckoutDocumentActionAvailable()) {
+			// !_fileEntryDisplayContextHelper.isCheckoutDocumentActionAvailable()) {
 
 			return;
 		}
@@ -249,8 +256,8 @@ public class UIItemsBuilder {
 	public void addCheckoutToolbarItem(List<ToolbarItem> toolbarItems)
 		throws PortalException {
 
-		if (!_fileEntryDisplayContextHelper.
-				isCheckoutDocumentActionAvailable()) {
+		// if (!_fileEntryDisplayContextHelper.isCheckoutDocumentActionAvailable()) {
+		if (!_isCheckoutDocumentActionAvailable()) {
 
 			return;
 		}
@@ -430,7 +437,8 @@ public class UIItemsBuilder {
 
 		if ((_fileEntry == null) ||
 			(_fileVersion.getStatus() != WorkflowConstants.STATUS_APPROVED) ||
-			!_fileEntryDisplayContextHelper.hasDeletePermission() ||
+			!_hasDeletePermission() ||
+			// !_fileEntryDisplayContextHelper.hasDeletePermission() ||
 			!(_fileEntry.getModel() instanceof DLFileEntry)) {
 
 			return;
@@ -529,8 +537,8 @@ public class UIItemsBuilder {
 		throws PortalException {
 
 		if (((_fileShortcut != null) &&
-			 !_fileShortcutDisplayContextHelper.isEditActionAvailable()) ||
-			//  !_isEditActionAvailable()) ||
+			 !_isFileShortcutEditActionAvailable()) ||
+			//  !_fileShortcutDisplayContextHelper.isEditActionAvailable()) ||
 			((_fileShortcut == null) &&
 			 !_isEditActionAvailable())) {
 			//  !_fileEntryDisplayContextHelper._isEditActionAvailable())) {
@@ -557,7 +565,8 @@ public class UIItemsBuilder {
 	public void addEditToolbarItem(List<ToolbarItem> toolbarItems)
 		throws PortalException {
 
-		if (!_fileEntryDisplayContextHelper.isEditActionAvailable()) {
+		if (!_isEditActionAvailable()) {
+		// if (!_fileEntryDisplayContextHelper.isEditActionAvailable()) {
 			return;
 		}
 
@@ -573,9 +582,11 @@ public class UIItemsBuilder {
 		throws PortalException {
 
 		if (((_fileShortcut != null) &&
-			 !_fileShortcutDisplayContextHelper.isMoveActionAvailable()) ||
+			 !_isFileShortcutMoveActionAvailable()) ||
+			//  !_fileShortcutDisplayContextHelper.isMoveActionAvailable()) ||
 			((_fileShortcut == null) &&
-			 !_fileEntryDisplayContextHelper.isMoveActionAvailable())) {
+			 !_isMoveActionAvailable())) {
+			//  !_fileEntryDisplayContextHelper.isMoveActionAvailable())) {
 
 			return;
 		}
@@ -590,9 +601,9 @@ public class UIItemsBuilder {
 	public void addCopyMenuItem(List<MenuItem> menuItems)
 			throws PortalException {
 		if (((_fileShortcut != null)
-				&& !_fileShortcutDisplayContextHelper.isMoveActionAvailable())
-				|| ((_fileShortcut == null) && !_fileEntryDisplayContextHelper
-						.isMoveActionAvailable())) {
+				&& !_isFileShortcutMoveActionAvailable())
+				// && !_fileShortcutDisplayContextHelper.isMoveActionAvailable())
+				|| ((_fileShortcut == null) && !_isMoveActionAvailable())) {
 
 			return;
 		}
@@ -605,7 +616,8 @@ public class UIItemsBuilder {
 
 	public void addMoveToolbarItem(List<ToolbarItem> toolbarItems)
 		throws PortalException {
-		if (!_fileEntryDisplayContextHelper.isMoveActionAvailable()) {
+		if (!_isMoveActionAvailable()) {
+		// if (!_fileEntryDisplayContextHelper.isMoveActionAvailable()) {
 			return;
 		}
 		_addJavaScriptUIItem(
@@ -617,7 +629,8 @@ public class UIItemsBuilder {
 	// custom copy functionality implemented in DMS
 	public void addCopyToolbarItem(List<ToolbarItem> toolbarItems)
 			throws PortalException {
-		if (!_fileEntryDisplayContextHelper.isMoveActionAvailable()) {
+		if (!_isMoveActionAvailable()) {
+		// if (!_fileEntryDisplayContextHelper.isMoveActionAvailable()) {
 			return;
 		}
 		_addJavaScriptUIItem(new JavaScriptToolbarItem(), toolbarItems,
@@ -740,9 +753,11 @@ public class UIItemsBuilder {
 		throws PortalException {
 
 		if (((_fileShortcut != null) &&
-			 !_fileShortcutDisplayContextHelper.isPermissionsButtonVisible()) ||
+			 !_isFileShortcutPermissionsButtonVisible()) ||
+			//  !_fileShortcutDisplayContextHelper.isPermissionsButtonVisible()) ||
 			((_fileShortcut == null) &&
-			 !_fileEntryDisplayContextHelper.isPermissionsButtonVisible())) {
+			 !_isPermissionsButtonVisible())) {
+			//  !_fileEntryDisplayContextHelper.isPermissionsButtonVisible())) {
 
 			return;
 		}
@@ -783,7 +798,8 @@ public class UIItemsBuilder {
 	public void addPermissionsToolbarItem(List<ToolbarItem> toolbarItems)
 		throws PortalException {
 
-		if (!_fileEntryDisplayContextHelper.isPermissionsButtonVisible()) {
+		if (!_isPermissionsButtonVisible()) {
+		// if (!_fileEntryDisplayContextHelper.isPermissionsButtonVisible()) {
 			return;
 		}
 
@@ -845,9 +861,11 @@ public class UIItemsBuilder {
 		}
 
 		if (((_fileEntry == null) ||
-			 !_fileEntryDisplayContextHelper.hasExportImportPermission()) &&
+			 !_hasExportImportPermission()) &&
+			//  !_fileEntryDisplayContextHelper.hasExportImportPermission()) &&
 			((_fileShortcut == null) ||
-			 _fileShortcutDisplayContextHelper.hasExportImportPermission())) {
+			 _hasFileShortcutExportImportPermission())) {
+			//  _fileShortcutDisplayContextHelper.hasExportImportPermission())) {
 
 			return;
 		}
@@ -894,7 +912,8 @@ public class UIItemsBuilder {
 		throws PortalException {
 
 		if ((_fileVersion.getStatus() != WorkflowConstants.STATUS_APPROVED) ||
-			!_fileEntryDisplayContextHelper.hasUpdatePermission()) {
+			!_hasUpdatePermission()) {
+			// !_fileEntryDisplayContextHelper.hasUpdatePermission()) {
 
 			return;
 		}
@@ -1004,7 +1023,8 @@ public class UIItemsBuilder {
 	}
 
 	public boolean isOpenInMsOfficeActionAvailable() throws PortalException {
-		if (_fileEntryDisplayContextHelper.hasViewPermission() &&
+		// if (_fileEntryDisplayContextHelper.hasViewPermission() &&
+		if (_hasViewPermission() &&
 			_fileVersionDisplayContextHelper.isMsOffice() &&
 			_isWebDAVEnabled() && _isIEOnWin32()) {
 
@@ -1052,10 +1072,12 @@ public class UIItemsBuilder {
 
 	protected boolean isDeleteActionAvailable() throws PortalException {
 		if (((_fileShortcut != null) &&
-			 _fileShortcutDisplayContextHelper.isFileShortcutDeletable() &&
+			 _isFileShortcutDeletable() &&
+			//  _fileShortcutDisplayContextHelper.isFileShortcutDeletable() &&
 			 !_isFileShortcutTrashable()) ||
 			((_fileShortcut == null) &&
-			 _fileEntryDisplayContextHelper.isFileEntryDeletable() &&
+			_isFileEntryDeletable() &&
+			//  _fileEntryDisplayContextHelper.isFileEntryDeletable() &&
 			 !_isFileEntryTrashable())) {
 
 			return true;
@@ -1069,9 +1091,11 @@ public class UIItemsBuilder {
 
 		if (!isDeleteActionAvailable() &&
 			(((_fileShortcut != null) &&
-			  _fileShortcutDisplayContextHelper.isFileShortcutDeletable()) ||
+			  _isFileShortcutDeletable()) ||
+			//   _fileShortcutDisplayContextHelper.isFileShortcutDeletable()) ||
 			 ((_fileShortcut == null) &&
-			  _fileEntryDisplayContextHelper.isFileEntryDeletable()))) {
+			  _isFileEntryDeletable()))) {
+			//   _fileEntryDisplayContextHelper.isFileEntryDeletable()))) {
 
 			return true;
 		}
@@ -1103,13 +1127,14 @@ public class UIItemsBuilder {
 
 			_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
+			_permissionChecker = _themeDisplay.getPermissionChecker();
 
 			// _fileEntryDisplayContextHelper = new FileEntryDisplayContextHelper(
 			// 	_themeDisplay.getPermissionChecker(), _fileEntry);
 
-			_fileShortcutDisplayContextHelper =
-				new FileShortcutDisplayContextHelper(
-					_themeDisplay.getPermissionChecker(), _fileShortcut);
+			// _fileShortcutDisplayContextHelper =
+			// 	new FileShortcutDisplayContextHelper(
+			// 		_themeDisplay.getPermissionChecker(), _fileShortcut);
 
 			_fileVersionDisplayContextHelper =
 				new FileVersionDisplayContextHelper(fileVersion);
@@ -1325,7 +1350,8 @@ public class UIItemsBuilder {
 	}
 
 	private boolean _isFileShortcutTrashable() throws PortalException {
-		if (_fileShortcutDisplayContextHelper.isDLFileShortcut() &&
+		// if (_fileShortcutDisplayContextHelper.isDLFileShortcut() &&
+		if (_isDLFileShortcut() &&
 			_isTrashEnabled(_themeDisplay.getScopeGroupId(), _getRepositoryId())) {
 
 			return true;
@@ -1543,9 +1569,219 @@ public class UIItemsBuilder {
 		}
 	}
 
+	private boolean _isFileEntryDeletable() throws PortalException {
+		if (_fileEntry == null || _fileEntry.isInTrash()) {
+			return false;
+		}
+		
+		return _permissionChecker.hasPermission(
+			_fileEntry.getGroupId(),
+			DLFileEntry.class.getName(),
+			_fileEntry.getFileEntryId(),
+			ActionKeys.DELETE);
+	}
+
+	private boolean _hasViewPermission() throws PortalException {
+		if (_fileEntry == null) {
+			return false;
+		}
+		
+		return _permissionChecker.hasPermission(
+			_fileEntry.getGroupId(),
+			DLFileEntry.class.getName(),
+			_fileEntry.getFileEntryId(),
+			ActionKeys.VIEW);
+	}
+
+	private boolean _hasUpdatePermission() throws PortalException {
+		if (_fileEntry == null) {
+			return false;
+		}
+		
+		return _permissionChecker.hasPermission(
+			_fileEntry.getGroupId(),
+			DLFileEntry.class.getName(),
+			_fileEntry.getFileEntryId(),
+			ActionKeys.UPDATE);
+	}
+
+	// TODO check this
+	private boolean _hasExportImportPermission() throws PortalException {
+		// return _permissionChecker.hasPermission(
+		// 	_fileEntry.getGroupId(),
+		// 	"com.liferay.portlet.exportimport",
+		// 	_fileEntry.getGroupId(),
+		// 	"EXPORT_IMPORT_PORTLET_INFO");
+
+		try {
+			return GroupPermissionUtil.contains(
+				_permissionChecker,
+				_fileEntry.getGroupId(),
+				ActionKeys.EXPORT_IMPORT_PORTLET_INFO);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private boolean _hasDeletePermission() throws PortalException {
+		return _hasUpdatePermission(); // Même logique généralement
+	}
+
+	private boolean _isPermissionsButtonVisible() throws PortalException {
+		return _permissionChecker.hasPermission(
+			_fileEntry.getGroupId(),
+			DLFileEntry.class.getName(),
+			_fileEntry.getFileEntryId(),
+			ActionKeys.PERMISSIONS);
+	}
+
+	private boolean _isMoveActionAvailable() throws PortalException {
+		return _hasUpdatePermission() && !_fileEntry.isInTrash();
+	}
+
+	private boolean _isCheckoutDocumentActionAvailable() throws PortalException {
+		if (_fileEntry == null || _fileEntry.isInTrash()) {
+			return false;
+		}
+		
+		// Vérifier que le fichier n'est pas déjà en checkout
+		if (_fileEntry.isCheckedOut()) {
+			return false;
+		}
+		
+		// Vérifier les permissions UPDATE
+		return _permissionChecker.hasPermission(
+			_fileEntry.getGroupId(),
+			DLFileEntry.class.getName(),
+			_fileEntry.getFileEntryId(),
+			ActionKeys.UPDATE);
+	}
+
+	private boolean _isCheckinActionAvailable() throws PortalException {
+		if (_fileEntry == null || _fileEntry.isInTrash()) {
+			return false;
+		}
+		
+		// Le fichier doit être en checkout
+		if (!_fileEntry.isCheckedOut()) {
+			return false;
+		}
+		
+		// L'utilisateur doit être celui qui a fait le checkout ou avoir les permissions
+		return _fileEntry.hasLock() || 
+			_permissionChecker.hasPermission(
+				_fileEntry.getGroupId(),
+				DLFileEntry.class.getName(),
+				_fileEntry.getFileEntryId(),
+				ActionKeys.UPDATE);
+	}
+
+	private boolean _isCancelCheckoutDocumentActionAvailable() throws PortalException {
+		if (_fileEntry == null || _fileEntry.isInTrash()) {
+			return false;
+		}
+		
+		// Le fichier doit être en checkout
+		if (!_fileEntry.isCheckedOut()) {
+			return false;
+		}
+		
+		// L'utilisateur doit être celui qui a fait le checkout ou être admin
+		return _fileEntry.hasLock() || 
+			_permissionChecker.isGroupAdmin(_fileEntry.getGroupId()) ||
+			_permissionChecker.isCompanyAdmin();
+	}
+
+	// _fileShortcutDisplayContextHelper.isEditActionAvailable()
+	// Remplacer par :
+	private boolean _isFileShortcutEditActionAvailable() throws PortalException {
+		if (_fileShortcut == null || _isFileShortcutInTrash()) {
+			return false;
+		}
+		
+		return _permissionChecker.hasPermission(
+			_fileShortcut.getGroupId(),
+			DLFileShortcutConstants.getClassName(),
+			_fileShortcut.getFileShortcutId(),
+			ActionKeys.UPDATE);
+	}
+
+	// _fileShortcutDisplayContextHelper.isMoveActionAvailable()
+	// Remplacer par :
+	private boolean _isFileShortcutMoveActionAvailable() throws PortalException {
+		if (_fileShortcut == null || _isFileShortcutInTrash()) {
+			return false;
+		}
+		
+		return _permissionChecker.hasPermission(
+			_fileShortcut.getGroupId(),
+			DLFileShortcutConstants.getClassName(),
+			_fileShortcut.getFileShortcutId(),
+			ActionKeys.UPDATE);
+	}
+
+	// _fileShortcutDisplayContextHelper.isPermissionsButtonVisible()
+	// Remplacer par :
+	private boolean _isFileShortcutPermissionsButtonVisible() throws PortalException {
+		if (_fileShortcut == null) {
+			return false;
+		}
+		
+		return _permissionChecker.hasPermission(
+			_fileShortcut.getGroupId(),
+			DLFileShortcutConstants.getClassName(),
+			_fileShortcut.getFileShortcutId(),
+			ActionKeys.PERMISSIONS);
+	}
+
+	// _fileShortcutDisplayContextHelper.hasExportImportPermission()
+	// Remplacer par :
+	private boolean _hasFileShortcutExportImportPermission() throws PortalException {
+		// Vérification simplifiée pour la migration
+		return _permissionChecker.isGroupAdmin(_fileShortcut.getGroupId()) ||
+			_permissionChecker.isCompanyAdmin();
+	}
+
+	// _fileShortcutDisplayContextHelper.isFileShortcutDeletable()
+	// Remplacer par :
+	private boolean _isFileShortcutDeletable() throws PortalException {
+		if (_fileShortcut == null || _isFileShortcutInTrash()) {
+			return false;
+		}
+		
+		return _permissionChecker.hasPermission(
+			_fileShortcut.getGroupId(),
+			DLFileShortcutConstants.getClassName(),
+			_fileShortcut.getFileShortcutId(),
+			ActionKeys.DELETE);
+	}
+
+	// _fileShortcutDisplayContextHelper.isDLFileShortcut()
+	// Remplacer par :
+	private boolean _isDLFileShortcut() {
+		return _fileShortcut != null && 
+			(_fileShortcut.getModel() instanceof DLFileShortcut);
+	}
+
+	private boolean _isFileShortcutInTrash() {
+		try {
+			if (_fileShortcut == null) {
+				return false;
+			}
+			
+			// Vérifier via le fichier cible
+			FileEntry targetFileEntry = _fileShortcut.getFileVersion().getFileEntry();
+			return targetFileEntry.isInTrash();
+			
+		} catch (Exception e) {
+			// En cas d'erreur, considérer comme non supprimé
+			return false;
+		}
+	}
 
 	private Long _repositoryId;
 	private Folder _folder;
+	private final PermissionChecker _permissionChecker;
 
 	private String _currentURL;
 	// private final DLTrashUtil _dlTrashUtil;
@@ -1553,8 +1789,8 @@ public class UIItemsBuilder {
 	private final FileEntry _fileEntry;
 	// private final FileEntryDisplayContextHelper _fileEntryDisplayContextHelper;
 	private FileShortcut _fileShortcut;
-	private final FileShortcutDisplayContextHelper
-		_fileShortcutDisplayContextHelper;
+	// private final FileShortcutDisplayContextHelper
+	// 	_fileShortcutDisplayContextHelper;
 	private final FileVersion _fileVersion;
 	private final FileVersionDisplayContextHelper
 		_fileVersionDisplayContextHelper;
@@ -1565,5 +1801,7 @@ public class UIItemsBuilder {
 	private final ThemeDisplay _themeDisplay;
 	private Boolean _trashEnabled;
 	private final VersioningStrategy _versioningStrategy;
+
+	private static final Log _log = LogFactoryUtil.getLog(UIItemsBuilder.class);
 
 }
