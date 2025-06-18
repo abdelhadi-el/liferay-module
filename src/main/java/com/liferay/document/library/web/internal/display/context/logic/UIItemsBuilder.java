@@ -44,12 +44,12 @@ import com.liferay.portal.kernel.repository.model.FileVersion;
 // import com.liferay.portal.kernel.servlet.BrowserSnifferUtil;
 import com.liferay.portal.kernel.servlet.taglib.ui.DeleteMenuItem;
 import com.liferay.portal.kernel.servlet.taglib.ui.JavaScriptMenuItem;
-import com.liferay.portal.kernel.servlet.taglib.ui.JavaScriptToolbarItem;
+// import com.liferay.portal.kernel.servlet.taglib.ui.JavaScriptToolbarItem;
 import com.liferay.portal.kernel.servlet.taglib.ui.JavaScriptUIItem;
 import com.liferay.portal.kernel.servlet.taglib.ui.MenuItem;
 import com.liferay.portal.kernel.servlet.taglib.ui.ToolbarItem;
 import com.liferay.portal.kernel.servlet.taglib.ui.URLMenuItem;
-import com.liferay.portal.kernel.servlet.taglib.ui.URLToolbarItem;
+// import com.liferay.portal.kernel.servlet.taglib.ui.URLToolbarItem;
 import com.liferay.portal.kernel.servlet.taglib.ui.URLUIItem;
 import com.liferay.portal.kernel.template.Template;
 import com.liferay.portal.kernel.template.TemplateConstants;
@@ -100,7 +100,10 @@ import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.document.library.kernel.model.DLFileShortcut;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.BrowserSnifferUtil;
+// import com.liferay.portal.kernel.util.BrowserSnifferUtil;
+// import com.liferay.portal.kernel.servlet.taglib.ui.JavaScriptMenuItem;
+// import com.liferay.portal.kernel.servlet.taglib.ui.MenuItem;
+// import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 
 /**
  * @author Iv??n Zaera
@@ -170,11 +173,44 @@ public class UIItemsBuilder {
 			return;
 		}
 
-		_addJavaScriptUIItem(
-			new JavaScriptToolbarItem(), toolbarItems,
-			DLUIItemKeys.CANCEL_CHECKOUT,
-			LanguageUtil.get(_resourceBundle, "cancel-checkout[document]"),
-			getSubmitFormJavaScript(Constants.CANCEL_CHECKOUT, null));
+		// _addJavaScriptUIItemForToolbar(
+		// 	(JavaScriptMenuItem) new JavaScriptMenuItem(), /*new JavaScriptToolbarItem(), */toolbarItems,
+		// 	DLUIItemKeys.CANCEL_CHECKOUT,
+		// 	LanguageUtil.get(_resourceBundle, "cancel-checkout[document]"),
+		// 	getSubmitFormJavaScript(Constants.CANCEL_CHECKOUT, null));
+		
+		// Utiliser JavaScriptMenuItem au lieu de JavaScriptToolbarItem
+    	// JavaScriptMenuItem javaScriptMenuItem = _addJavaScriptUIItem(
+        // new JavaScriptMenuItem(), toolbarItems, DLUIItemKeys.CANCEL_CHECKOUT,
+        // LanguageUtil.get(_resourceBundle, "cancel-checkout[document]"), getSubmitFormJavaScript(
+		// 		Constants.CANCEL_CHECKOUT, null));
+		
+		toolbarItems.add(new ToolbarItem() {
+			@Override
+			public String getKey() {
+				return DLUIItemKeys.CANCEL_CHECKOUT;
+			}
+
+			@Override
+			public String getLabel() {
+				return LanguageUtil.get(_resourceBundle, "cancel-checkout[document]");
+			}
+
+			@Override
+			public String getIcon() {
+				return null; // Optional, set if needed
+			}
+
+			// @Override
+			public boolean isEnabled() {
+				return true; // Adjust logic if needed
+			}
+
+			// Add JavaScript behavior via a custom method or attribute if supported
+			public String getOnClick() {
+				return getSubmitFormJavaScript(Constants.CANCEL_CHECKOUT, null);
+			}
+		});
 	}
 
 	public void addCheckinMenuItem(List<MenuItem> menuItems)
@@ -204,12 +240,28 @@ public class UIItemsBuilder {
 		portletURL.setParameter(
 			"fileEntryId", String.valueOf(_fileEntry.getFileEntryId()));
 
-		JavaScriptToolbarItem javaScriptToolbarItem = _addJavaScriptUIItem(
-			new JavaScriptToolbarItem(), toolbarItems, DLUIItemKeys.CHECKIN,
-			LanguageUtil.get(_resourceBundle, "checkin"),
-			StringBundler.concat(
-				getNamespace(), "showVersionDetailsDialog('",
-				HtmlUtil.escapeJS(portletURL.toString()), "');"));
+		// Build initial JavaScript
+    	String initialJavaScript = StringBundler.concat(
+        getNamespace(), "showVersionDetailsDialog('",
+        HtmlUtil.escapeJS(portletURL.toString()), "');");
+
+		// JavaScriptToolbarItem javaScriptToolbarItem = _addJavaScriptUIItem(
+		// JavaScriptMenuItem javaScriptToolbarItem = _addJavaScriptUIItemForToolbar(
+		// 	(JavaScriptMenuItem) new JavaScriptMenuItem(), /*new JavaScriptToolbarItem(), */
+		// 	toolbarItems, DLUIItemKeys.CHECKIN,
+		// 	LanguageUtil.get(_resourceBundle, "checkin"),
+		// 	StringBundler.concat(
+		// 		getNamespace(), "showVersionDetailsDialog('",
+		// 		HtmlUtil.escapeJS(portletURL.toString()), "');"));
+
+
+
+		// Utiliser JavaScriptMenuItem au lieu de JavaScriptToolbarItem
+    	// JavaScriptMenuItem javaScriptToolbarItem = _addJavaScriptUIItem(
+        // new JavaScriptMenuItem(), toolbarItems, DLUIItemKeys.CHECKIN,
+        // LanguageUtil.get(_resourceBundle, "checkin"), StringBundler.concat(
+		// 		getNamespace(), "showVersionDetailsDialog('",
+		// 		HtmlUtil.escapeJS(portletURL.toString()), "');"));
 
 		String javaScript =
 			"/com/liferay/document/library/web/display/context/dependencies" +
@@ -228,8 +280,39 @@ public class UIItemsBuilder {
 		UnsyncStringWriter unsyncStringWriter = new UnsyncStringWriter();
 
 		template.processTemplate(unsyncStringWriter);
+	
+		// Combine initial and template-generated JavaScript
+		String finalJavaScript = initialJavaScript + unsyncStringWriter.toString();
+		
+		// TODO CHECK THIS
+		// javaScriptToolbarItem.setJavaScript(unsyncStringWriter.toString());
 
-		javaScriptToolbarItem.setJavaScript(unsyncStringWriter.toString());
+		toolbarItems.add(new ToolbarItem() {
+			@Override
+			public String getKey() {
+				return DLUIItemKeys.CHECKIN;
+			}
+
+			@Override
+			public String getLabel() {
+				return LanguageUtil.get(_resourceBundle, "checkin");
+			}
+
+			@Override
+			public String getIcon() {
+				return null; // Optional, set if needed
+			}
+
+			// @Override
+			public boolean isEnabled() {
+				return true; // Adjust logic if needed
+			}
+
+			// Add URL behavior via a custom method or attribute if supported
+			public String getUrl() {
+				return finalJavaScript;
+			}
+		});
 	}
 
 	public void addCheckoutMenuItem(List<MenuItem> menuItems)
@@ -253,6 +336,16 @@ public class UIItemsBuilder {
 			"checkout[document]", portletURL.toString());
 	}
 
+	// Dans UIItemsBuilder.java
+	// private void _addJavaScriptToolbarItem(
+	// 	List<ToolbarItem> toolbarItems, String key, String label, String onClick) {
+	// 	JavaScriptMenuItem item = new JavaScriptMenuItem();
+	// 	item.setKey(key);
+	// 	item.setLabel(label);
+	// 	item.setOnClick(onClick);
+	// 	toolbarItems.add((ToolbarItem)item);
+	// }
+
 	public void addCheckoutToolbarItem(List<ToolbarItem> toolbarItems)
 		throws PortalException {
 
@@ -262,11 +355,58 @@ public class UIItemsBuilder {
 			return;
 		}
 
-		_addJavaScriptUIItem(
-			new JavaScriptToolbarItem(), toolbarItems, DLUIItemKeys.CHECKOUT,
-			LanguageUtil.get(_resourceBundle, "checkout[document]"),
-			getSubmitFormJavaScript(Constants.CHECKOUT, null));
+		// _addJavaScriptUIItemForToolbar(
+		// 	(JavaScriptMenuItem) new JavaScriptMenuItem(), /*new JavaScriptToolbarItem(), */ toolbarItems, DLUIItemKeys.CHECKOUT,
+		// 	LanguageUtil.get(_resourceBundle, "checkout[document]"),
+		// 	getSubmitFormJavaScript(Constants.CHECKOUT, null));
+
+		// Utiliser JavaScriptMenuItem au lieu de JavaScriptToolbarItem
+    	// JavaScriptMenuItem javaScriptMenuItem = _addJavaScriptUIItem(
+        // new JavaScriptMenuItem(), toolbarItems, DLUIItemKeys.CHECKOUT,
+        // LanguageUtil.get(_resourceBundle, "checkout[document]"), getSubmitFormJavaScript(
+		// 		Constants.CANCEL_CHECKOUT, null));
+
+				toolbarItems.add(new ToolbarItem() {
+			@Override
+			public String getKey() {
+				return DLUIItemKeys.CHECKOUT;
+			}
+
+			@Override
+			public String getLabel() {
+				return LanguageUtil.get(_resourceBundle, "checkout[document]");
+			}
+
+			@Override
+			public String getIcon() {
+				return null; // Optional, set if needed
+			}
+
+			// @Override
+			public boolean isEnabled() {
+				return true; // Adjust logic if needed
+			}
+
+			// Add URL behavior via a custom method or attribute if supported
+			public String getUrl() {
+				return getSubmitFormJavaScript(Constants.CHECKOUT, null);
+			}
+		});
 	}
+
+	// public void addCheckoutToolbarItem(List<ToolbarItem> toolbarItems)
+	// 	throws PortalException {
+
+	// 	if (!_isCheckoutDocumentActionAvailable()) {
+	// 		return;
+	// 	}
+
+	// 	_addJavaScriptToolbarItem(
+	// 		toolbarItems, DLUIItemKeys.CHECKOUT,
+	// 		LanguageUtil.get(_resourceBundle, "checkout[document]"),
+	// 		getSubmitFormJavaScript(Constants.CHECKOUT, null));
+	// }
+
 
 	public void addCompareToMenuItem(List<MenuItem> menuItems)
 		throws PortalException {
@@ -312,8 +452,14 @@ public class UIItemsBuilder {
 		sb.append("');");
 
 		JavaScriptMenuItem javaScriptMenuItem = _addJavaScriptUIItem(
-			new JavaScriptMenuItem(), menuItems, DLUIItemKeys.COMPARE_TO,
+			(JavaScriptMenuItem) new JavaScriptMenuItem(), /*new JavaScriptToolbarItem(), */ 
+			menuItems, DLUIItemKeys.COMPARE_TO,
 			"compare-to", sb.toString());
+		
+		// Utiliser JavaScriptMenuItem au lieu de JavaScriptToolbarItem
+    	// JavaScriptMenuItem javaScriptMenuItem = _addJavaScriptUIItem(
+        // new JavaScriptMenuItem(), menuItems, DLUIItemKeys.COMPARE_TO,
+        // "compare-to", sb.toString());
 
 		javaScriptMenuItem.setData(data);
 
@@ -427,9 +573,42 @@ public class UIItemsBuilder {
 
 		sb.append("}");
 
-		_addJavaScriptUIItem(
-			new JavaScriptToolbarItem(), toolbarItems, DLUIItemKeys.DELETE,
-			LanguageUtil.get(_resourceBundle, "delete"), sb.toString());
+		// _addJavaScriptUIItemForToolbar(
+		// 	(JavaScriptMenuItem) new JavaScriptMenuItem(), /*new JavaScriptToolbarItem(), */
+		// 	 toolbarItems, DLUIItemKeys.DELETE,
+		// 	LanguageUtil.get(_resourceBundle, "delete"), sb.toString());
+
+		// Utiliser JavaScriptMenuItem au lieu de JavaScriptToolbarItem
+    	// JavaScriptMenuItem javaScriptMenuItem = _addJavaScriptUIItem(
+        // new JavaScriptMenuItem(), toolbarItems, DLUIItemKeys.DELETE,
+        // LanguageUtil.get(_resourceBundle, "delete"), sb.toString());
+
+		toolbarItems.add(new ToolbarItem() {
+			@Override
+			public String getKey() {
+				return DLUIItemKeys.DELETE;
+			}
+
+			@Override
+			public String getLabel() {
+				return LanguageUtil.get(_resourceBundle, "delete");
+			}
+
+			@Override
+			public String getIcon() {
+				return null; // Optional, set if needed
+			}
+
+			// @Override
+			public boolean isEnabled() {
+				return true; // Adjust logic if needed
+			}
+
+			// Add URL behavior via a custom method or attribute if supported
+			public String getUrl() {
+				return sb.toString();
+			}
+		});
 	}
 
 	public void addDeleteVersionMenuItem(List<MenuItem> menuItems)
@@ -524,13 +703,50 @@ public class UIItemsBuilder {
 		String label = LanguageUtil.formatStorageSize(
 			_fileVersion.getSize(), _themeDisplay.getLocale());
 
-		_addURLUIItem(
-			new URLToolbarItem(), toolbarItems, DLUIItemKeys.DOWNLOAD,
-			StringBundler.concat(
-				LanguageUtil.get(_resourceBundle, "download"), " (", label,
-				")"),
-			_dlURLHelper.getDownloadURL(
-				_fileEntry, _fileVersion, _themeDisplay, StringPool.BLANK));
+		// _addURLUIItem(
+		// 	new URLToolbarItem(), toolbarItems, DLUIItemKeys.DOWNLOAD,
+		// 	StringBundler.concat(
+		// 		LanguageUtil.get(_resourceBundle, "download"), " (", label,
+		// 		")"),
+		// 	_dlURLHelper.getDownloadURL(
+		// 		_fileEntry, _fileVersion, _themeDisplay, StringPool.BLANK));
+
+		// _addURLUIItemForToolbar(
+        // new URLMenuItem(), toolbarItems, DLUIItemKeys.DOWNLOAD,
+        // StringBundler.concat(
+        //     LanguageUtil.get(_resourceBundle, "download"), " (", label,
+        //     ")"),
+        // _dlURLHelper.getDownloadURL(
+        //     _fileEntry, _fileVersion, _themeDisplay, StringPool.BLANK));
+		
+		toolbarItems.add(new ToolbarItem() {
+			@Override
+			public String getKey() {
+				return DLUIItemKeys.DOWNLOAD;
+			}
+
+			@Override
+			public String getLabel() {
+				return StringBundler.concat(
+					LanguageUtil.get(_resourceBundle, "download"), " (", label, ")");
+			}
+
+			@Override
+			public String getIcon() {
+				return null; // Optional, set if needed
+			}
+
+			// @Override
+			public boolean isEnabled() {
+				return true; // Adjust logic if needed
+			}
+
+			// Add URL behavior via a custom method or attribute if supported
+			public String getUrl() {
+				return _dlURLHelper.getDownloadURL(
+					_fileEntry, _fileVersion, _themeDisplay, StringPool.BLANK);
+			}
+		});
 	}
 
 	public void addEditMenuItem(List<MenuItem> menuItems)
@@ -573,9 +789,40 @@ public class UIItemsBuilder {
 		PortletURL portletURL = _getRenderURL(
 			"/document_library/edit_file_entry");
 
-		_addURLUIItem(
-			new URLToolbarItem(), toolbarItems, DLUIItemKeys.EDIT,
-			LanguageUtil.get(_resourceBundle, "edit"), portletURL.toString());
+		// _addURLUIItem(
+		// 	new URLToolbarItem(), toolbarItems, DLUIItemKeys.EDIT,
+		// 	LanguageUtil.get(_resourceBundle, "edit"), portletURL.toString());
+
+		// _addURLUIItemForToolbar(
+		// 	new URLMenuItem(), toolbarItems, DLUIItemKeys.EDIT,
+		// 	LanguageUtil.get(_resourceBundle, "edit"), portletURL.toString());
+
+		toolbarItems.add(new ToolbarItem() {
+			@Override
+			public String getKey() {
+				return DLUIItemKeys.EDIT;
+			}
+
+			@Override
+			public String getLabel() {
+				return LanguageUtil.get(_resourceBundle, "edit");
+			}
+
+			@Override
+			public String getIcon() {
+				return null; // Optional, set if needed
+			}
+
+			// @Override
+			public boolean isEnabled() {
+				return true; // Adjust logic if needed
+			}
+
+			// Add URL behavior via a custom method or attribute if supported
+			public String getUrl() {
+				return portletURL.toString();
+			}
+		});
 	}
 
 	public void addMoveMenuItem(List<MenuItem> menuItems)
@@ -592,9 +839,15 @@ public class UIItemsBuilder {
 		}
 
 		_addJavaScriptUIItem(
-			new JavaScriptMenuItem(), menuItems, DLUIItemKeys.MOVE,
+			(JavaScriptMenuItem) new JavaScriptMenuItem(), /*new JavaScriptToolbarItem(), */
+			menuItems, DLUIItemKeys.MOVE,
 			LanguageUtil.get(_resourceBundle, "move"),
 			_getMoveEntryOnClickJavaScript());
+		
+		// Utiliser JavaScriptMenuItem au lieu de JavaScriptToolbarItem
+    	// JavaScriptMenuItem javaScriptMenuItem = _addJavaScriptUIItem(
+        // new JavaScriptMenuItem(), menuItems, DLUIItemKeys.MOVE,
+        // LanguageUtil.get(_resourceBundle, "move"), _getMoveEntryOnClickJavaScript());
 	}
 
 	//custom copy functionality implemented in DMS
@@ -612,6 +865,12 @@ public class UIItemsBuilder {
 				DLUIItemKeys.class.getName() + "#copy",
 				LanguageUtil.get(_resourceBundle, "copy"),
 				_getCopyEntryOnClickJavaScript());
+
+
+		// Utiliser JavaScriptMenuItem au lieu de JavaScriptToolbarItem
+    	// JavaScriptMenuItem javaScriptMenuItem = _addJavaScriptUIItem(
+        // new JavaScriptMenuItem(), menuItems, DLUIItemKeys.class.getName() + "#copy",
+        // LanguageUtil.get(_resourceBundle, "copy"), _getCopyEntryOnClickJavaScript());
 	}
 
 	public void addMoveToolbarItem(List<ToolbarItem> toolbarItems)
@@ -620,10 +879,43 @@ public class UIItemsBuilder {
 		// if (!_fileEntryDisplayContextHelper.isMoveActionAvailable()) {
 			return;
 		}
-		_addJavaScriptUIItem(
-			new JavaScriptToolbarItem(), toolbarItems, DLUIItemKeys.MOVE,
-			LanguageUtil.get(_resourceBundle, "move"),
-			_getMoveEntryOnClickJavaScript());
+		// _addJavaScriptUIItemForToolbar(
+		// 	(JavaScriptMenuItem) new JavaScriptMenuItem(), /*new JavaScriptToolbarItem(), */toolbarItems, DLUIItemKeys.MOVE,
+		// 	LanguageUtil.get(_resourceBundle, "move"),
+		// 	_getMoveEntryOnClickJavaScript());
+
+		
+		// Utiliser JavaScriptMenuItem au lieu de JavaScriptToolbarItem
+    	// JavaScriptMenuItem javaScriptMenuItem = _addJavaScriptUIItem(
+        // new JavaScriptMenuItem(), toolbarItems, DLUIItemKeys.MOVE,
+        // LanguageUtil.get(_resourceBundle, "move"), _getMoveEntryOnClickJavaScript());
+
+			toolbarItems.add(new ToolbarItem() {
+			@Override
+			public String getKey() {
+				return DLUIItemKeys.MOVE;
+			}
+
+			@Override
+			public String getLabel() {
+				return LanguageUtil.get(_resourceBundle, "move");
+			}
+
+			@Override
+			public String getIcon() {
+				return null; // Optional, set if needed
+			}
+
+			// @Override
+			public boolean isEnabled() {
+				return true; // Adjust logic if needed
+			}
+
+			// Add URL behavior via a custom method or attribute if supported
+			public String getUrl() {
+				return _getMoveEntryOnClickJavaScript();
+			}
+		});
 	}
 
 	// custom copy functionality implemented in DMS
@@ -633,10 +925,42 @@ public class UIItemsBuilder {
 		// if (!_fileEntryDisplayContextHelper.isMoveActionAvailable()) {
 			return;
 		}
-		_addJavaScriptUIItem(new JavaScriptToolbarItem(), toolbarItems,
-				DLUIItemKeys.class.getName() + "#copy",
-				LanguageUtil.get(_resourceBundle, "copy"),
-				_getCopyEntryOnClickJavaScript());
+		// _addJavaScriptUIItemForToolbar(	(JavaScriptMenuItem) new JavaScriptMenuItem(), /*new JavaScriptToolbarItem(), */ toolbarItems,
+		// 		DLUIItemKeys.class.getName() + "#copy",
+		// 		LanguageUtil.get(_resourceBundle, "copy"),
+		// 		_getCopyEntryOnClickJavaScript());
+
+		// Utiliser JavaScriptMenuItem au lieu de JavaScriptToolbarItem
+    	// JavaScriptMenuItem javaScriptMenuItem = _addJavaScriptUIItem(
+        // new JavaScriptMenuItem(), toolbarItems, DLUIItemKeys.class.getName() + "#copy",
+        // LanguageUtil.get(_resourceBundle, "copy"), _getCopyEntryOnClickJavaScript());
+
+		toolbarItems.add(new ToolbarItem() {
+			@Override
+			public String getKey() {
+				return DLUIItemKeys.class.getName() + "#copy";
+			}
+
+			@Override
+			public String getLabel() {
+				return LanguageUtil.get(_resourceBundle, "copy");
+			}
+
+			@Override
+			public String getIcon() {
+				return null; // Optional, set if needed
+			}
+
+			// @Override
+			public boolean isEnabled() {
+				return true; // Adjust logic if needed
+			}
+
+			// Add URL behavior via a custom method or attribute if supported
+			public String getUrl() {
+				return _getCopyEntryOnClickJavaScript();
+			}
+		});
 	}
 
 	public void addMoveToTheRecycleBinToolbarItem(
@@ -667,12 +991,45 @@ public class UIItemsBuilder {
 		portletURL.setParameter(
 			"folderId", String.valueOf(_fileEntry.getFolderId()));
 
-		_addJavaScriptUIItem(
-			new JavaScriptToolbarItem(), toolbarItems,
-			DLUIItemKeys.MOVE_TO_THE_RECYCLE_BIN,
-			LanguageUtil.get(_resourceBundle, "move-to-recycle-bin"),
-			getSubmitFormJavaScript(
-				Constants.MOVE_TO_TRASH, portletURL.toString()));
+		// _addJavaScriptUIItemForToolbar(
+		// 	(JavaScriptMenuItem) new JavaScriptMenuItem(), /*new JavaScriptToolbarItem(), */ toolbarItems,
+		// 	DLUIItemKeys.MOVE_TO_THE_RECYCLE_BIN,
+		// 	LanguageUtil.get(_resourceBundle, "move-to-recycle-bin"),
+		// 	getSubmitFormJavaScript(
+		// 		Constants.MOVE_TO_TRASH, portletURL.toString()));
+		
+		// Utiliser JavaScriptMenuItem au lieu de JavaScriptToolbarItem
+    	// JavaScriptMenuItem javaScriptMenuItem = _addJavaScriptUIItem(
+        // new JavaScriptMenuItem(), toolbarItems, DLUIItemKeys.MOVE_TO_THE_RECYCLE_BIN,
+        // LanguageUtil.get(_resourceBundle, "move-to-recycle-bin"), getSubmitFormJavaScript(
+		// 		Constants.MOVE_TO_TRASH, portletURL.toString()));
+
+			toolbarItems.add(new ToolbarItem() {
+			@Override
+			public String getKey() {
+				return DLUIItemKeys.MOVE_TO_THE_RECYCLE_BIN;
+			}
+
+			@Override
+			public String getLabel() {
+				return LanguageUtil.get(_resourceBundle, "move-to-recycle-bin");
+			}
+
+			@Override
+			public String getIcon() {
+				return null; // Optional, set if needed
+			}
+
+			// @Override
+			public boolean isEnabled() {
+				return true; // Adjust logic if needed
+			}
+
+			// Add URL behavior via a custom method or attribute if supported
+			public String getUrl() {
+				return getSubmitFormJavaScript(Constants.MOVE_TO_TRASH, portletURL.toString());
+			}
+		});
 	}
 
 	public void addOpenInMsOfficeMenuItem(List<MenuItem> menuItems)
@@ -695,6 +1052,11 @@ public class UIItemsBuilder {
 		JavaScriptMenuItem javaScriptMenuItem = _addJavaScriptUIItem(
 			new JavaScriptMenuItem(), menuItems, DLUIItemKeys.OPEN_IN_MS_OFFICE,
 			"open-in-ms-office", onClick);
+
+		// Utiliser JavaScriptMenuItem au lieu de JavaScriptToolbarItem
+    	// JavaScriptMenuItem javaScriptMenuItem = _addJavaScriptUIItem(
+        // new JavaScriptMenuItem(), menuItems, DLUIItemKeys.OPEN_IN_MS_OFFICE,
+        // "open-in-ms-office", onClick);
 
 		String javaScript =
 			"/com/liferay/document/library/web/display/context/dependencies" +
@@ -742,11 +1104,43 @@ public class UIItemsBuilder {
 		sb.append(HtmlUtil.escapeJS(webDavURL));
 		sb.append("');");
 
-		_addJavaScriptUIItem(
-			new JavaScriptToolbarItem(), toolbarItems,
-			DLUIItemKeys.OPEN_IN_MS_OFFICE,
-			LanguageUtil.get(_resourceBundle, "open-in-ms-office"),
-			sb.toString());
+		// _addJavaScriptUIItemForToolbar(
+		// 		(JavaScriptMenuItem) new JavaScriptMenuItem(), /*new JavaScriptToolbarItem(), */ toolbarItems,
+		// 	DLUIItemKeys.OPEN_IN_MS_OFFICE,
+		// 	LanguageUtil.get(_resourceBundle, "open-in-ms-office"),
+		// 	sb.toString());
+
+		// Utiliser JavaScriptMenuItem au lieu de JavaScriptToolbarItem
+		// JavaScriptMenuItem javaScriptMenuItem = _addJavaScriptUIItem(
+		// 	new JavaScriptMenuItem(), toolbarItems, DLUIItemKeys.OPEN_IN_MS_OFFICE,
+		// 	LanguageUtil.get(_resourceBundle, "open-in-ms-office"), sb.toString());
+
+		toolbarItems.add(new ToolbarItem() {
+			@Override
+			public String getKey() {
+				return DLUIItemKeys.OPEN_IN_MS_OFFICE;
+			}
+
+			@Override
+			public String getLabel() {
+				return LanguageUtil.get(_resourceBundle, "open-in-ms-office");
+			}
+
+			@Override
+			public String getIcon() {
+				return null; // Optional, set if needed
+			}
+
+			// @Override
+			public boolean isEnabled() {
+				return true; // Adjust logic if needed
+			}
+
+			// Add URL behavior via a custom method or attribute if supported
+			public String getUrl() {
+				return sb.toString();
+			}
+		});
 	}
 
 	public void addPermissionsMenuItem(List<MenuItem> menuItems)
@@ -827,9 +1221,41 @@ public class UIItemsBuilder {
 		sb.append(HtmlUtil.escapeJS(permissionsURL));
 		sb.append("'});");
 
-		_addJavaScriptUIItem(
-			new JavaScriptToolbarItem(), toolbarItems, DLUIItemKeys.PERMISSIONS,
-			LanguageUtil.get(_resourceBundle, "permissions"), sb.toString());
+		// _addJavaScriptUIItemForToolbar(
+		// 		(JavaScriptMenuItem) new JavaScriptMenuItem(), /*new JavaScriptToolbarItem(), */ toolbarItems, DLUIItemKeys.PERMISSIONS,
+		// 	LanguageUtil.get(_resourceBundle, "permissions"), sb.toString());
+
+		// Utiliser JavaScriptMenuItem au lieu de JavaScriptToolbarItem
+		// JavaScriptMenuItem javaScriptMenuItem = _addJavaScriptUIItem(
+		// 	new JavaScriptMenuItem(), toolbarItems, DLUIItemKeys.PERMISSIONS,
+		// 	LanguageUtil.get(_resourceBundle, "permissions"), sb.toString());
+
+		toolbarItems.add(new ToolbarItem() {
+			@Override
+			public String getKey() {
+				return DLUIItemKeys.PERMISSIONS;
+			}
+
+			@Override
+			public String getLabel() {
+				return LanguageUtil.get(_resourceBundle, "permissions");
+			}
+
+			@Override
+			public String getIcon() {
+				return null; // Optional, set if needed
+			}
+
+			// @Override
+			public boolean isEnabled() {
+				return true; // Adjust logic if needed
+			}
+
+			// Add URL behavior via a custom method or attribute if supported
+			public String getUrl() {
+				return sb.toString();
+			}
+		});
 	}
 
 	public void addPublishMenuItem(
@@ -1025,13 +1451,58 @@ public class UIItemsBuilder {
 	public boolean isOpenInMsOfficeActionAvailable() throws PortalException {
 		// if (_fileEntryDisplayContextHelper.hasViewPermission() &&
 		if (_hasViewPermission() &&
-			_fileVersionDisplayContextHelper.isMsOffice() &&
+			// _fileVersionDisplayContextHelper.isMsOffice() &&
+			_isMsOffice() &&
 			_isWebDAVEnabled() && _isIEOnWin32()) {
 
 			return true;
 		}
 
 		return false;
+	}
+
+	private boolean _isMsOffice() {
+		if (_fileVersion == null) {
+			return false;
+		}
+		
+		String mimeType = _fileVersion.getMimeType();
+		String extension = _fileVersion.getExtension();
+		
+		if (mimeType == null && extension == null) {
+			return false;
+		}
+		
+		// Vérification des types Office
+		return _isMsOfficeExtension(extension) || _isMsOfficeMimeType(mimeType);
+	}
+
+	private boolean _isMsOfficeExtension(String extension) {
+		if (extension == null) {
+			return false;
+		}
+		
+		extension = extension.toLowerCase();
+		
+		// Extensions Microsoft Office
+		return extension.equals("doc") || extension.equals("docx") ||
+			extension.equals("xls") || extension.equals("xlsx") ||
+			extension.equals("ppt") || extension.equals("pptx") ||
+			extension.equals("docm") || extension.equals("xlsm") ||
+			extension.equals("pptm");
+	}
+
+	private boolean _isMsOfficeMimeType(String mimeType) {
+		if (mimeType == null) {
+			return false;
+		}
+		
+		// Types MIME Microsoft Office
+		return mimeType.startsWith("application/vnd.ms-") ||
+			mimeType.startsWith("application/vnd.openxmlformats-officedocument") ||
+			mimeType.equals("application/msword") ||
+			mimeType.equals("application/vnd.ms-excel") ||
+			mimeType.equals("application/vnd.ms-powerpoint");
 	}
 
 	protected String getNamespace() {
@@ -1136,8 +1607,8 @@ public class UIItemsBuilder {
 			// 	new FileShortcutDisplayContextHelper(
 			// 		_themeDisplay.getPermissionChecker(), _fileShortcut);
 
-			_fileVersionDisplayContextHelper =
-				new FileVersionDisplayContextHelper(fileVersion);
+			// _fileVersionDisplayContextHelper =
+			// 	new FileVersionDisplayContextHelper(fileVersion);
 		}
 		catch (PortalException portalException) {
 			throw new SystemException(
@@ -1155,9 +1626,36 @@ public class UIItemsBuilder {
 		javascriptUIItem.setOnClick(onClick);
 
 		javascriptUIItems.add(javascriptUIItem);
-
+		// Cast to ToolbarItem to maintain compatibility with the method signature
+    	// ((List<ToolbarItem>) javascriptUIItems).add((ToolbarItem) javascriptUIItem);
 		return javascriptUIItem;
 	}
+
+	// private JavaScriptMenuItem _addJavaScriptUIItemForToolbar(
+	// 	JavaScriptMenuItem javascriptMenuItem, List<ToolbarItem> toolbarItems,
+	// 	String key, String label, String onClick) {
+
+	// 	javascriptMenuItem.setKey(key);
+	// 	javascriptMenuItem.setLabel(label);
+	// 	javascriptMenuItem.setOnClick(onClick);
+
+	// 	toolbarItems.add(javascriptMenuItem);
+
+	// 	return javascriptMenuItem;
+	// }
+
+	// private URLMenuItem _addURLUIItemForToolbar(
+	// 	URLMenuItem urlMenuItem, List<ToolbarItem> toolbarItems,
+	// 	String key, String label, String url) {
+
+	// 	urlMenuItem.setKey(key);
+	// 	urlMenuItem.setLabel(label);
+	// 	urlMenuItem.setURL(url);
+
+	// 	toolbarItems.add((ToolbarItem) urlMenuItem); // Explicit cast to ToolbarItem
+
+	// 	return urlMenuItem;
+	// }
 
 	private <T extends URLUIItem> T _addURLUIItem(
 		T urlUIItem, List<? super T> urlUIItems, String key, String label,
@@ -1394,11 +1892,31 @@ public class UIItemsBuilder {
 		}
 	}
 
+	// private boolean _isIEOnWin32() {
+	// 	if (_ieOnWin32 == null) {
+	// 		_ieOnWin32 = BrowserSnifferUtil.isIeOnWin32(_httpServletRequest);
+	// 	}
+
+	// 	return _ieOnWin32;
+	// }
+
+
 	private boolean _isIEOnWin32() {
 		if (_ieOnWin32 == null) {
-			_ieOnWin32 = BrowserSnifferUtil.isIeOnWin32(_httpServletRequest);
+			// Implémentation directe sans BrowserSnifferUtil
+			try {
+				String userAgent = _httpServletRequest.getHeader("User-Agent");
+				if (userAgent != null) {
+					userAgent = userAgent.toLowerCase();
+					_ieOnWin32 = (userAgent.contains("msie") || userAgent.contains("trident")) 
+							&& userAgent.contains("windows");
+				} else {
+					_ieOnWin32 = false;
+				}
+			} catch (Exception e) {
+				_ieOnWin32 = false;
+			}
 		}
-
 		return _ieOnWin32;
 	}
 
@@ -1779,6 +2297,8 @@ public class UIItemsBuilder {
 		}
 	}
 
+
+
 	private Long _repositoryId;
 	private Folder _folder;
 	private final PermissionChecker _permissionChecker;
@@ -1792,8 +2312,8 @@ public class UIItemsBuilder {
 	// private final FileShortcutDisplayContextHelper
 	// 	_fileShortcutDisplayContextHelper;
 	private final FileVersion _fileVersion;
-	private final FileVersionDisplayContextHelper
-		_fileVersionDisplayContextHelper;
+	// private final FileVersionDisplayContextHelper
+	// 	_fileVersionDisplayContextHelper;
 	private final HttpServletRequest _httpServletRequest;
 	private Boolean _ieOnWin32;
 	private String _redirect;

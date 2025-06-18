@@ -91,6 +91,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
 import com.liferay.portal.kernel.util.JavaConstants;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 /**
  * @author Alejandro Tard??n
@@ -835,11 +837,18 @@ public class DLAdminManagementToolbarDisplayContext {
 		// DLPortletInstanceSettings dlPortletInstanceSettings =
 		// 	_dlRequestHelper.getDLPortletInstanceSettings();
 		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
-		DLPortletInstanceSettings dlPortletInstanceSettings = 
-			DLPortletInstanceSettings.getInstance(_themeDisplay.getLayout(), portletDisplay.getId());
+		DLPortletInstanceSettings dlPortletInstanceSettings = null;
+
+		try {
+			dlPortletInstanceSettings = DLPortletInstanceSettings.getInstance(_themeDisplay.getLayout(), portletDisplay.getId());
+		} catch (PortalException e) {
+			_log.warn("Failed to get DLPortletInstanceSettings", e);
+			return null; // Default to false if exception occurs
+		}
 
 		return dlPortletInstanceSettings.getDisplayViews();
 	}
+
 
 	private long _getFileEntryTypeId() {
 		return ParamUtil.getLong(_httpServletRequest, "fileEntryTypeId", -1);
@@ -1053,17 +1062,9 @@ public class DLAdminManagementToolbarDisplayContext {
 			long folderId, long fileEntryTypeId)
 		throws PortalException {
 
-		try {
 			return DLUtil.hasWorkflowDefinitionLink(
 				_themeDisplay.getCompanyId(), _themeDisplay.getScopeGroupId(),
 				folderId, fileEntryTypeId);
-		}
-		catch (PortalException | RuntimeException exception) {
-			throw exception;
-		}
-		catch (Exception exception) {
-			throw new PortalException(exception);
-		}
 	}
 
 	private boolean _isEnableOnBulk() throws PortalException {
@@ -1094,5 +1095,8 @@ public class DLAdminManagementToolbarDisplayContext {
 	private final LiferayPortletResponse _liferayPortletResponse;
 	private final ThemeDisplay _themeDisplay;
 	private Folder _folder;
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		DLAdminManagementToolbarDisplayContext.class);
 
 }

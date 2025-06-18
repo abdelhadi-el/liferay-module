@@ -95,7 +95,7 @@ public class FolderActionDisplayContext {
 		_httpServletRequest = httpServletRequest;
 		// _dlTrashUtil = dlTrashUtil;
 
-		// _dlRequestHelper = new DLRequestHelper(httpServletRequest);
+		// _dlRequestHelper = new DLRequestHelper(httpServletRequest);²
 		// Remplacement de DLRequestHelper
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY);
 		_permissionChecker = _themeDisplay.getPermissionChecker();
@@ -658,7 +658,7 @@ public class FolderActionDisplayContext {
 		return true;
 	}
 
-	public boolean isShowActions() {
+	public boolean isShowActions() throws PortalException {
 		// DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper =
 			// new DLPortletInstanceSettingsHelper(_dlRequestHelper);
 		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();

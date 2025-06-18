@@ -44,6 +44,7 @@ if (Validator.isNull(redirect)) {
 
 Folder folder = fileEntry.getFolder();
 FileVersion fileVersion = (FileVersion)request.getAttribute(WebKeys.DOCUMENT_LIBRARY_FILE_VERSION);
+ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 
 boolean versionSpecific = false;
 
@@ -63,8 +64,9 @@ AssetEntry layoutAssetEntry = AssetEntryLocalServiceUtil.fetchEntry(DLFileEntryC
 
 request.setAttribute(WebKeys.LAYOUT_ASSET_ENTRY, layoutAssetEntry);
 
-DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper = new DLPortletInstanceSettingsHelper(dlRequestHelper);
+//DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper = new DLPortletInstanceSettingsHelper(dlRequestHelper);
 final DLViewFileVersionDisplayContext dlViewFileVersionDisplayContext = dlDisplayContextProvider.getDLViewFileVersionDisplayContext(request, response, fileVersion);
+DLPortletInstanceSettings dlPortletInstanceSettings = DLPortletInstanceSettings.getInstance(themeDisplay.getLayout(), themeDisplay.getPortletDisplay().getId());
 
 boolean portletTitleBasedNavigation = GetterUtil.getBoolean(portletConfig.getInitParameter("portlet-title-based-navigation"));
 
@@ -163,7 +165,7 @@ if (portletTitleBasedNavigation) {
 					label="info"
 				/>
 
-				<c:if test="<%= dlPortletInstanceSettingsHelper.isShowActions() %>">
+				<c:if test="<%= dlPortletInstanceSettings.isShowActions() %>">
 
 					<%
 					for (ToolbarItem toolbarItem : dlViewFileVersionDisplayContext.getToolbarItems()) {
@@ -235,7 +237,7 @@ if (portletTitleBasedNavigation) {
 	</div>
 </div>
 
-<c:if test="<%= dlPortletInstanceSettingsHelper.isShowActions() && dlAdminDisplayContext.isVersioningStrategyOverridable() %>">
+<c:if test="<%= dlPortletInstanceSettings.isShowActions() && dlAdminDisplayContext.isVersioningStrategyOverridable() %>">
 
 	<%
 	request.setAttribute("edit_file_entry.jsp-checkedOut", fileEntry.isCheckedOut());

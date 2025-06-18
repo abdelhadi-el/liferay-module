@@ -473,13 +473,33 @@ public class DefaultDLViewFileVersionDisplayContext
 	// 	return false;
 	// }
 
+	// @Override
+	// public boolean isActionsVisible() {
+	// 	PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
+	// 	DLPortletInstanceSettings dlPortletInstanceSettings = 
+	// 		DLPortletInstanceSettings.getInstance(_themeDisplay.getLayout(), portletDisplay.getId());
+
+	// 	if (dlPortletInstanceSettings.isShowActions()) {
+	// 		return true;
+	// 	}
+
+	// 	return false;
+	// }
+
 	@Override
 	public boolean isActionsVisible() {
 		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
-		DLPortletInstanceSettings dlPortletInstanceSettings = 
-			DLPortletInstanceSettings.getInstance(_themeDisplay.getLayout(), portletDisplay.getId());
+		DLPortletInstanceSettings dlPortletInstanceSettings = null;
 
-		if (dlPortletInstanceSettings.isShowActions()) {
+		try {
+			dlPortletInstanceSettings = DLPortletInstanceSettings.getInstance(_themeDisplay.getLayout(), portletDisplay.getId());
+		} catch (PortalException e) {
+			_log.warn("Failed to get DLPortletInstanceSettings", e);
+			return false; // Default to false if exception occurs
+		}
+
+		if (dlPortletInstanceSettings != null && dlPortletInstanceSettings.isShowActions()) {
+			dlPortletInstanceSettings.getEntryColumns();
 			return true;
 		}
 

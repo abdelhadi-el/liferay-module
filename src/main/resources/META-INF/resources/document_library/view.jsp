@@ -27,7 +27,9 @@ String navigation = ParamUtil.getString(request, "navigation");
 		<liferay-util:dynamic-include key="com.liferay.document.library.web#/document_library/view.jsp#pre" />
 
 		<%
-		DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper = new DLPortletInstanceSettingsHelper(dlRequestHelper);
+		// DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper = new DLPortletInstanceSettingsHelper(dlRequestHelper);
+		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
+		DLPortletInstanceSettings dlPortletInstanceSettings = DLPortletInstanceSettings.getInstance(themeDisplay.getLayout(), themeDisplay.getPortletDisplay().getId());
 
 		System.out.println("from view jsp page=========");
 		
@@ -224,7 +226,8 @@ String navigation = ParamUtil.getString(request, "navigation");
 		<aui:script use="liferay-document-library">
 
 			<%
-			String[] entryColumns = dlPortletInstanceSettingsHelper.getEntryColumns();
+			String[] entryColumns = dlPortletInstanceSettings.getEntryColumns();
+			// String[] entryColumns = dlPortletInstanceSettingsHelper.getEntryColumns();
 			String[] escapedEntryColumns = new String[entryColumns.length];
 
 			for (int i = 0; i < entryColumns.length; i++) {
